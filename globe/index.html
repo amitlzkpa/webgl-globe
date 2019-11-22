@@ -35,14 +35,32 @@
         container: "map",
         style: "mapbox://styles/mapbox/streets-v9",
         center: [-21.9270884, 64.1436456],
-        zoom: 1,
+        zoom: 0,
         preserveDrawingBuffer: true,
-        antialias: true
+        antialias: true,
+        renderWorldCopies: false
       });
 
       var container = document.getElementById("container");
       var globe = new DAT.Globe(container);
   		globe.animate();
+
+
+
+      document.addEventListener("keyup", function (event) {
+
+        if(event.code !== "Space") return;
+
+        event.preventDefault();
+
+        var mapImg = map.getCanvas().toDataURL();
+        var texture = new THREE.TextureLoader().load(mapImg);
+        var material = new THREE.MeshBasicMaterial( { map: texture } );
+        globe.mesh.material = material;
+        console.log(material);
+
+
+      }, false);
 
     }
 
