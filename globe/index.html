@@ -10,7 +10,7 @@
         padding: 0px;
       }
       #map {
-        height: 300px !important;
+        height: 400px !important;
       }
     </style>
   </head>
@@ -22,6 +22,7 @@
   <script src="/globe/third-party/Detector.js"></script>
   <script src="/globe/third-party/three.min.js"></script>
   <script src="/globe/third-party/Tween.js"></script>
+  <script src="/globe/third-party/MercatorPlane.js"></script>
   <script src="/globe/globe.js"></script>
   <script src="/globe/third-party/mapbox-gl.js"></script>
   <script type="text/javascript">
@@ -55,9 +56,13 @@
 
         var mapImg = map.getCanvas().toDataURL();
         var texture = new THREE.TextureLoader().load(mapImg);
-        var material = new THREE.MeshBasicMaterial( { map: texture } );
+        var material = new THREE.MeshBasicMaterial( { map: texture, opacity: 0.3 } );
         globe.mesh.material = material;
         console.log(material);
+
+        let mp = new MercatorPlane(texture, 1000);
+        console.log(mp);
+        globe.scene.add(mp)
 
 
       }, false);
