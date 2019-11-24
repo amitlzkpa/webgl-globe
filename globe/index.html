@@ -31,41 +31,44 @@
       Detector.addGetWebGLMessage();
     } else {
 
-      mapboxgl.accessToken = "pk.eyJ1IjoiYW1pdGx6a3BhIiwiYSI6ImNpZmN6ZW12ZzRvYTFzeG03ZDdkNzd5d2oifQ.FxgL_waU-ZRhhtQdeOvtcA";
-      var map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/streets-v9",
-        center: [-21.9270884, 64.1436456],
-        zoom: 0,
-        preserveDrawingBuffer: true,
-        antialias: true,
-        renderWorldCopies: false
-      });
+      // mapboxgl.accessToken = "pk.eyJ1IjoiYW1pdGx6a3BhIiwiYSI6ImNpZmN6ZW12ZzRvYTFzeG03ZDdkNzd5d2oifQ.FxgL_waU-ZRhhtQdeOvtcA";
+      // var map = new mapboxgl.Map({
+      //   container: "map",
+      //   style: "mapbox://styles/mapbox/streets-v9",
+      //   center: [-21.9270884, 64.1436456],
+      //   zoom: 0,
+      //   preserveDrawingBuffer: true,
+      //   antialias: true,
+      //   renderWorldCopies: false
+      // });
 
       var container = document.getElementById("container");
       var globe = new DAT.Globe(container);
   		globe.animate();
 
+      let pos_mumbai = [19.076090, 72.877426];
+      globe.addMarker(pos_mumbai[0], pos_mumbai[1]);
 
 
-      document.addEventListener("keyup", function (event) {
 
-        if(event.code !== "Space") return;
+      // document.addEventListener("keyup", function (event) {
 
-        event.preventDefault();
+      //   if(event.code !== "Space") return;
 
-        var mapImg = map.getCanvas().toDataURL();
-        var texture = new THREE.TextureLoader().load(mapImg);
-        var material = new THREE.MeshBasicMaterial( { map: texture, opacity: 0.3 } );
-        globe.mesh.material = material;
-        console.log(material);
+      //   event.preventDefault();
 
-        let mp = new MercatorPlane(texture, 1000);
-        console.log(mp);
-        globe.scene.add(mp)
+      //   var mapImg = map.getCanvas().toDataURL();
+      //   var texture = new THREE.TextureLoader().load(mapImg);
+      //   var material = new THREE.MeshBasicMaterial( { map: texture, opacity: 0.3 } );
+      //   globe.mesh.material = material;
+      //   console.log(material);
+
+      //   let mp = new MercatorPlane(texture, 1000);
+      //   console.log(mp);
+      //   globe.scene.add(mp)
 
 
-      }, false);
+      // }, false);
 
     }
 

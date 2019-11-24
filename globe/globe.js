@@ -189,7 +189,6 @@ DAT.Globe = function(container, opts) {
         for (i = 0; i < data.length; i += step) {
           lat = data[i];
           lng = data[i + 1];
-//        size = data[i + 2];
           color = colorFnWrapper(data,i);
           size = 0;
           addPoint(lat, lng, size, color, this._baseGeometry);
@@ -272,6 +271,24 @@ DAT.Globe = function(container, opts) {
     subgeo.merge(point.geometry, point.matrix);
   }
 
+  function addMarker(lat, lng, opts) {
+
+    var phi = (90 - lat) * Math.PI / 180;
+    var theta = (180 - lng) * Math.PI / 180;
+
+    var geometry = new THREE.SphereGeometry( 3, 8, 8 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    var point = new THREE.Mesh( geometry, material );
+
+    point.position.x = 203 * Math.sin(phi) * Math.cos(theta);
+    point.position.y = 203 * Math.cos(phi);
+    point.position.z = 203 * Math.sin(phi) * Math.sin(theta);
+
+    point.lookAt(mesh.position);
+
+    scene.add(point);
+  }
+
   function onMouseDown(event) {
     event.preventDefault();
 
@@ -344,7 +361,7 @@ DAT.Globe = function(container, opts) {
   function zoom(delta) {
     distanceTarget -= delta;
     distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
-    distanceTarget = distanceTarget < 350 ? 350 : distanceTarget;
+    distanceTarget = distanceTarget < 210 ? 210 : distanceTarget;
   }
 
   function animate() {
@@ -401,6 +418,7 @@ DAT.Globe = function(container, opts) {
   });
 
   this.addData = addData;
+  this.addMarker = addMarker;
   this.createPoints = createPoints;
   this.renderer = renderer;
   this.scene = scene;
