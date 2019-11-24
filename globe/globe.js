@@ -215,7 +215,6 @@ DAT.Globe = function(container, opts) {
     } else {
       this._baseGeometry = subgeo;
     }
-
   };
 
   function createPoints() {
@@ -246,6 +245,14 @@ DAT.Globe = function(container, opts) {
     }
   }
 
+  function latToRadian(lat) {
+    return (90 - lat) * Math.PI / 180;
+  }
+
+  function lngToRadian(lng) {
+    return (180 - lng) * Math.PI / 180;
+  }
+
   // geojson, direct array feature format
   function parsePoint(input, opts) {
 
@@ -263,8 +270,8 @@ DAT.Globe = function(container, opts) {
     var lat = coords[0];
     var lng = coords[1];
 
-    var phi = (90 - lat) * Math.PI / 180;
-    var theta = (180 - lng) * Math.PI / 180;
+    var phi = latToRadian(lat);
+    var theta = lngToRadian(lng);
 
     var sz = (opts !== undefined && opts.size) ? opts.size : 2;
     var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
@@ -297,8 +304,8 @@ DAT.Globe = function(container, opts) {
       var lat = coords[ptIdx][0];
       var lng = coords[ptIdx][1];
 
-      var phi = (90 - lat) * Math.PI / 180;
-      var theta = (180 - lng) * Math.PI / 180;
+      var phi = latToRadian(lat);
+      var theta = lngToRadian(lng);
 
       var sz = (opts !== undefined && opts.size) ? opts.size : 2;
       var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
@@ -350,8 +357,8 @@ DAT.Globe = function(container, opts) {
     do {
       var lat = pts[c][0];
       var lng = pts[c][1];
-      var phi = (90 - lat) * Math.PI / 180;
-      var theta = (180 - lng) * Math.PI / 180;
+      var phi = latToRadian(lat);
+      var theta = lngToRadian(lng);
       var vt = new THREE.Vector3();
       vt.x = 200 * Math.sin(phi) * Math.cos(theta);
       vt.y = 200 * Math.cos(phi);
@@ -402,8 +409,8 @@ DAT.Globe = function(container, opts) {
       do {
         var lat = pts[c][0];
         var lng = pts[c][1];
-        var phi = (90 - lat) * Math.PI / 180;
-        var theta = (180 - lng) * Math.PI / 180;
+        var phi = latToRadian(lat);
+        var theta = lngToRadian(lng);
         var vt = new THREE.Vector3();
         vt.x = 200 * Math.sin(phi) * Math.cos(theta);
         vt.y = 200 * Math.cos(phi);
