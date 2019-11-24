@@ -280,6 +280,43 @@ DAT.Globe = function(container, opts) {
   }
 
   // geojson, direct array feature format
+  function parseMultiPoint(input, opts) {
+
+    var coords = null;
+
+    if (input.constructor === Array) {
+      coords = input;
+    } else {
+      // coordinate format is flipped in geojsons
+      coords = input.geometry.coordinates.map(c => [c[0], c[1]]);
+    }
+
+    var points = new THREE.Object3D();
+
+    for(var ptIdx = 0; ptIdx < coords.length; ptIdx++) {
+      var lat = coords[ptIdx][0];
+      var lng = coords[ptIdx][1];
+
+      var phi = (90 - lat) * Math.PI / 180;
+      var theta = (180 - lng) * Math.PI / 180;
+
+      var sz = (opts !== undefined && opts.size) ? opts.size : 2;
+      var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
+      var geometry = new THREE.SphereGeometry( sz, 8, 8 );
+      var material = new THREE.MeshBasicMaterial( {color: color} );
+      var point = new THREE.Mesh( geometry, material );
+
+      point.position.x = 203 * Math.sin(phi) * Math.cos(theta);
+      point.position.y = 203 * Math.cos(phi);
+      point.position.z = 203 * Math.sin(phi) * Math.sin(theta);
+
+      points.add(point);
+    }
+
+    return points;
+  }
+
+  // geojson, direct array feature format
   function parseLineString(input, opts) {
 
     var inPts = null;
@@ -395,6 +432,10 @@ DAT.Globe = function(container, opts) {
     switch (ftType) {
       case 'Point': {
         ret = parsePoint(node, { color: 0xff0000 });
+        break;
+      }
+      case 'MultiPoint': {
+        ret = parseMultiPoint(node, { color: 0xababab });
         break;
       }
       case 'LineString': {
@@ -543,6 +584,7 @@ DAT.Globe = function(container, opts) {
 
   this.addData = addData;
   this.parsePoint = parsePoint;
+  this.parseMultiPoint = parseMultiPoint;
   this.parseLineString = parseLineString;
   this.parseMultiLineString = parseMultiLineString;
   this.addGeoJson = addGeoJson;

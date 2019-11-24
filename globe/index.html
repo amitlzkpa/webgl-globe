@@ -118,9 +118,14 @@
         // globe.addGeoJson(gj);
 
 
-        let json = await fetch('/data/magellan-lines.geojson');
+        let json = await fetch('/data/dinagats.geojson');
         let gj = await json.json();
         globe.addGeoJson(gj);
+
+
+        // let json = await fetch('/data/magellan-lines.geojson');
+        // let gj = await json.json();
+        // globe.addGeoJson(gj);
 
 
         // document.addEventListener("keyup", function (event) {
