@@ -68,25 +68,25 @@
         let pos_vizag = [17.68009, 83.2016068];
         let pos_darwin = [-12.462827, 130.841782];
 
-        globe.addMarker( pos_mumbai, {size: 4} );
-        globe.addMarker( pos_delhi, {size: 2} );
-        globe.addMarker( pos_moscow, {size: 2} );
-        globe.addMarker( pos_austin );
-        globe.addMarker( pos_manila );
-        globe.addMarker( pos_hongkong, {size: 4} );
-        globe.addMarker( pos_cebu, {size: 2} );
-        globe.addMarker( pos_singapore, {size: 2} );
-        globe.addMarker( pos_bangkok, {size: 2} );
-        globe.addMarker( pos_phnompenh, {size: 2} );
-        globe.addMarker( pos_saigon, {size: 4} );
-        globe.addMarker( pos_jakarta, {size: 2} );
-        globe.addMarker( pos_tonga, {size: 2} );
-        globe.addMarker( pos_portmoresby, {size: 3} );
-        globe.addMarker( pos_napydaw, {size: 3} );
-        globe.addMarker( pos_portblair, {size: 2} );
-        globe.addMarker( pos_chennai, {size: 2} );
-        globe.addMarker( pos_vizag, {size: 3} );
-        globe.addMarker( pos_darwin, {size: 4} );
+        globe.scene.add(globe.parsePoint( pos_mumbai, {size: 4} ));
+        globe.scene.add(globe.parsePoint( pos_delhi, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_moscow, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_austin ));
+        globe.scene.add(globe.parsePoint( pos_manila ));
+        globe.scene.add(globe.parsePoint( pos_hongkong, {size: 4} ));
+        globe.scene.add(globe.parsePoint( pos_cebu, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_singapore, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_bangkok, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_phnompenh, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_saigon, {size: 4} ));
+        globe.scene.add(globe.parsePoint( pos_jakarta, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_tonga, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_portmoresby, {size: 3} ));
+        globe.scene.add(globe.parsePoint( pos_napydaw, {size: 3} ));
+        globe.scene.add(globe.parsePoint( pos_portblair, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_chennai, {size: 2} ));
+        globe.scene.add(globe.parsePoint( pos_vizag, {size: 3} ));
+        globe.scene.add(globe.parsePoint( pos_darwin, {size: 4} ));
 
 
         globe.addLine([pos_mumbai, pos_moscow], {color: 0x0000ff});
@@ -107,9 +107,10 @@
         globe.addLine([pos_darwin, pos_saigon], {color: 0xff0000});
         globe.addLine([pos_cebu, pos_manila], {color: 0xff0000});
 
-        // let json = await fetch('/data/world.geo.json');
-        // let gj_world = await json.json();
-        // globe.addGeoJson(gj_world);
+
+        let json = await fetch('/data/dinagat.geojson');
+        let gj = await json.json();
+        globe.addGeoJson(gj);
 
 
         // document.addEventListener("keyup", function (event) {

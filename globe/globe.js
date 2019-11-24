@@ -271,7 +271,18 @@ DAT.Globe = function(container, opts) {
     subgeo.merge(point.geometry, point.matrix);
   }
 
-  function addMarker(coords, opts) {
+  function parsePoint(input, opts) {
+
+    var coords = null;
+
+    if (input.constructor === Array) {
+      coords = input;
+    } else {
+      // coordinate format is flipped in geojsons
+      coords = [];
+      coords.push(input.geometry.coordinates[1]);
+      coords.push(input.geometry.coordinates[0]);
+    }
 
     var lat = coords[0];
     var lng = coords[1];
@@ -280,17 +291,16 @@ DAT.Globe = function(container, opts) {
     var theta = (180 - lng) * Math.PI / 180;
 
     var sz = (opts !== undefined && opts.size) ? opts.size : 2;
+    var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
     var geometry = new THREE.SphereGeometry( sz, 8, 8 );
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    var material = new THREE.MeshBasicMaterial( {color: color} );
     var point = new THREE.Mesh( geometry, material );
 
     point.position.x = 203 * Math.sin(phi) * Math.cos(theta);
     point.position.y = 203 * Math.cos(phi);
     point.position.z = 203 * Math.sin(phi) * Math.sin(theta);
 
-    point.lookAt(mesh.position);
-
-    scene.add(point);
+    return point;
   }
 
   function addLine(inPts, opts) {
@@ -333,8 +343,27 @@ DAT.Globe = function(container, opts) {
 
   function addGeoJson(geoJson) {
 
-    console.log('GeoJson not implemented yet.');
+    console.log(geoJson);
+    var pt = parseFeature(geoJson);
+    console.log(pt);
+    scene.add(pt);
 
+  }
+
+  function parseFeature(node) {
+    var ftType = node.geometry.type;
+    var ret = null;
+    switch (ftType) {
+      case 'Point': {
+        ret = parsePoint(node, { color: 0xff0000 });
+        break;
+      }
+      default: {
+        ret = null;
+        brek;
+      }
+    }
+    return ret;
   }
 
   function onMouseDown(event) {
@@ -466,7 +495,7 @@ DAT.Globe = function(container, opts) {
   });
 
   this.addData = addData;
-  this.addMarker = addMarker;
+  this.parsePoint = parsePoint;
   this.addLine = addLine;
   this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
