@@ -246,7 +246,7 @@ DAT.Globe = function(container, opts) {
     }
   }
 
-  // geojson,direct coords format
+  // geojson, direct array feature format
   function parsePoint(input, opts) {
 
     var coords = null;
@@ -279,7 +279,7 @@ DAT.Globe = function(container, opts) {
     return point;
   }
 
-  // geojson format
+  // geojson, direct array feature format
   function parseLineString(input, opts) {
 
     var inPts = null;
@@ -288,9 +288,7 @@ DAT.Globe = function(container, opts) {
       inPts = input;
     } else {
       // coordinate format is flipped in geojsons
-      inPts = [];
-      // coords.push(input.geometry.coordinates[1]);
-      // coords.push(input.geometry.coordinates[0]);
+      inPts = input.geometry.coordinates.map(c => { return [c[1], c[0]]; });
     }
 
     if (inPts.length != 2) throw ('Need 2 points for a line');
@@ -331,10 +329,8 @@ DAT.Globe = function(container, opts) {
 
   function addGeoJson(geoJson) {
 
-    console.log(geoJson);
-    var pt = parseFeature(geoJson);
-    console.log(pt);
-    scene.add(pt);
+    var feat = parseFeature(geoJson);
+    scene.add(feat);
 
   }
 
@@ -347,7 +343,7 @@ DAT.Globe = function(container, opts) {
         break;
       }
       case 'LineString': {
-        ret = parseLineString(node, { color: 0xff0000 });
+        ret = parseLineString(node, { color: 0xff00f0 });
         break;
       }
       default: {

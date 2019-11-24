@@ -108,7 +108,12 @@
         globe.scene.add(globe.parseLineString([pos_cebu, pos_manila], {color: 0xff0000}));
 
 
-        let json = await fetch('/data/dinagat.geojson');
+        // let json = await fetch('/data/dinagat.geojson');
+        // let gj = await json.json();
+        // globe.addGeoJson(gj);
+
+
+        let json = await fetch('/data/magellan-line.geojson');
         let gj = await json.json();
         globe.addGeoJson(gj);
 
