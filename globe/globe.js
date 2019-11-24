@@ -246,31 +246,7 @@ DAT.Globe = function(container, opts) {
     }
   }
 
-  function addPoint(lat, lng, size, color, subgeo) {
-
-    var phi = (90 - lat) * Math.PI / 180;
-    var theta = (180 - lng) * Math.PI / 180;
-
-    point.position.x = 200 * Math.sin(phi) * Math.cos(theta);
-    point.position.y = 200 * Math.cos(phi);
-    point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
-
-    point.lookAt(mesh.position);
-
-    point.scale.z = Math.max( size, 0.1 ); // avoid non-invertible matrix
-    point.updateMatrix();
-
-    for (var i = 0; i < point.geometry.faces.length; i++) {
-
-      point.geometry.faces[i].color = color;
-
-    }
-    if(point.matrixAutoUpdate){
-      point.updateMatrix();
-    }
-    subgeo.merge(point.geometry, point.matrix);
-  }
-
+  // geojson,direct coords format
   function parsePoint(input, opts) {
 
     var coords = null;
@@ -303,7 +279,20 @@ DAT.Globe = function(container, opts) {
     return point;
   }
 
-  function addLine(inPts, opts) {
+  // geojson format
+  function parseLineString(input, opts) {
+
+    var inPts = null;
+
+    if (input.constructor === Array) {
+      inPts = input;
+    } else {
+      // coordinate format is flipped in geojsons
+      inPts = [];
+      // coords.push(input.geometry.coordinates[1]);
+      // coords.push(input.geometry.coordinates[0]);
+    }
+
     if (inPts.length != 2) throw ('Need 2 points for a line');
 
     var divs = 100;
@@ -337,8 +326,7 @@ DAT.Globe = function(container, opts) {
     } while(c < pts.length)
 
     var line = new THREE.Line( geometry, material );
-    scene.add( line );
-
+    return line;
   }
 
   function addGeoJson(geoJson) {
@@ -358,9 +346,13 @@ DAT.Globe = function(container, opts) {
         ret = parsePoint(node, { color: 0xff0000 });
         break;
       }
+      case 'LineString': {
+        ret = parseLineString(node, { color: 0xff0000 });
+        break;
+      }
       default: {
         ret = null;
-        brek;
+        break;
       }
     }
     return ret;
@@ -496,7 +488,7 @@ DAT.Globe = function(container, opts) {
 
   this.addData = addData;
   this.parsePoint = parsePoint;
-  this.addLine = addLine;
+  this.parseLineString = parseLineString;
   this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
   this.renderer = renderer;
