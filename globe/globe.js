@@ -271,12 +271,16 @@ DAT.Globe = function(container, opts) {
     subgeo.merge(point.geometry, point.matrix);
   }
 
-  function addMarker(lat, lng, opts) {
+  function addMarker(coords, opts) {
+
+    var lat = coords[0];
+    var lng = coords[1];
 
     var phi = (90 - lat) * Math.PI / 180;
     var theta = (180 - lng) * Math.PI / 180;
 
-    var geometry = new THREE.SphereGeometry( 3, 8, 8 );
+    var sz = (opts !== undefined && opts.size) ? opts.size : 2;
+    var geometry = new THREE.SphereGeometry( sz, 8, 8 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
     var point = new THREE.Mesh( geometry, material );
 
@@ -287,6 +291,50 @@ DAT.Globe = function(container, opts) {
     point.lookAt(mesh.position);
 
     scene.add(point);
+  }
+
+  function addLine(inPts, opts) {
+    if (inPts.length != 2) throw ('Need 2 points for a line');
+
+    var divs = 100;
+    // var d = Math.sqrt(Math.pow(inPts[1][0] - inPts[0][0], 2) + Math.pow(inPts[1][0] - inPts[0][0], 2));
+    // console.log(d);
+    var deltaLat = (inPts[1][0] - inPts[0][0]) / divs;
+    var deltaLng = (inPts[1][1] - inPts[0][1]) / divs;
+
+    var pts = [];
+
+    for(var j = 0; j<divs; j++) {
+      pts.push([inPts[0][0] + (j * deltaLat), inPts[0][1] + (j * deltaLng)]);
+    }
+    pts.push(inPts[inPts.length-1])
+
+    var col = (opts && opts.color) ? opts.color : 0xffffff
+    var material = new THREE.LineBasicMaterial({ color: col });
+    var c=0;
+    var geometry = new THREE.Geometry();
+    do {
+      var lat = pts[c][0];
+      var lng = pts[c][1];
+      var phi = (90 - lat) * Math.PI / 180;
+      var theta = (180 - lng) * Math.PI / 180;
+      var vt = new THREE.Vector3();
+      vt.x = 200 * Math.sin(phi) * Math.cos(theta);
+      vt.y = 200 * Math.cos(phi);
+      vt.z = 200 * Math.sin(phi) * Math.sin(theta);
+      geometry.vertices.push( vt );
+      c++;
+    } while(c < pts.length)
+
+    var line = new THREE.Line( geometry, material );
+    scene.add( line );
+
+  }
+
+  function addGeoJson(geoJson) {
+
+    console.log('GeoJson not implemented yet.');
+
   }
 
   function onMouseDown(event) {
@@ -419,6 +467,8 @@ DAT.Globe = function(container, opts) {
 
   this.addData = addData;
   this.addMarker = addMarker;
+  this.addLine = addLine;
+  this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
   this.renderer = renderer;
   this.scene = scene;
