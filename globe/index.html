@@ -113,7 +113,12 @@
         // globe.addGeoJson(gj);
 
 
-        let json = await fetch('/data/magellan-line.geojson');
+        // let json = await fetch('/data/magellan-line.geojson');
+        // let gj = await json.json();
+        // globe.addGeoJson(gj);
+
+
+        let json = await fetch('/data/magellan-lines.geojson');
         let gj = await json.json();
         globe.addGeoJson(gj);
 

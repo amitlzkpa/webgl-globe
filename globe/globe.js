@@ -327,6 +327,61 @@ DAT.Globe = function(container, opts) {
     return line;
   }
 
+  // geojson, direct array feature format
+  function parseMultiLineString(input, opts) {
+
+    var inLns = null;
+
+    if (input.constructor === Array) {
+      inLns = input;
+    } else {
+      // coordinate format is flipped in geojsons
+      inLns = input.geometry.coordinates.map(l => { return l.map(c => { return [c[1], c[0]]; }); });
+    }
+
+    var lines = new THREE.Object3D();
+
+    for(let inLnsIdx = 0; inLnsIdx < inLns.length; inLnsIdx++)
+    {
+      var inPts = inLns[inLnsIdx];
+      if (inPts.length != 2) throw ('Need 2 points for a line');
+      var divs = 100;
+      // var d = Math.sqrt(Math.pow(inPts[1][0] - inPts[0][0], 2) + Math.pow(inPts[1][0] - inPts[0][0], 2));
+      // console.log(d);
+      var deltaLat = (inPts[1][0] - inPts[0][0]) / divs;
+      var deltaLng = (inPts[1][1] - inPts[0][1]) / divs;
+
+      var pts = [];
+
+      for(var j = 0; j<divs; j++) {
+        pts.push([inPts[0][0] + (j * deltaLat), inPts[0][1] + (j * deltaLng)]);
+      }
+      pts.push(inPts[inPts.length-1])
+
+      var col = (opts && opts.color) ? opts.color : 0xffffff
+      var material = new THREE.LineBasicMaterial({ color: col });
+      var c=0;
+      var geometry = new THREE.Geometry();
+      do {
+        var lat = pts[c][0];
+        var lng = pts[c][1];
+        var phi = (90 - lat) * Math.PI / 180;
+        var theta = (180 - lng) * Math.PI / 180;
+        var vt = new THREE.Vector3();
+        vt.x = 200 * Math.sin(phi) * Math.cos(theta);
+        vt.y = 200 * Math.cos(phi);
+        vt.z = 200 * Math.sin(phi) * Math.sin(theta);
+        geometry.vertices.push( vt );
+        c++;
+      } while(c < pts.length)
+
+      var line = new THREE.Line( geometry, material );
+      lines.add(line);
+    }
+
+    return lines;
+  }
+
   function addGeoJson(geoJson) {
 
     var feat = parseFeature(geoJson);
@@ -344,6 +399,10 @@ DAT.Globe = function(container, opts) {
       }
       case 'LineString': {
         ret = parseLineString(node, { color: 0xff00f0 });
+        break;
+      }
+      case 'MultiLineString': {
+        ret = parseMultiLineString(node, { color: 0x0000ff });
         break;
       }
       default: {
@@ -485,6 +544,7 @@ DAT.Globe = function(container, opts) {
   this.addData = addData;
   this.parsePoint = parsePoint;
   this.parseLineString = parseLineString;
+  this.parseMultiLineString = parseMultiLineString;
   this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
   this.renderer = renderer;
