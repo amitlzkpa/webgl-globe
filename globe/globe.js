@@ -13,6 +13,23 @@
 
 var DAT = DAT || {};
 
+/**
+ *
+ * Constructor used to create an instance of the globe.
+ * A globe instance is a threejs scene which contains the globe and all associated 3D objects.
+ *
+ * @param {DOMObject} container - The container to hold the scene.
+ * @param {Object} opts - An object containing configuration parameters for the globe.
+ *                        'colorFn': A function for mapping the globe's colors based on HSL values.
+ *                        'imgDir': Path to directory containing image to be used as texture for the globe.
+ * @return {DAT.Globe} An instance of the globe.
+ *
+ * @example
+ *
+ *  var container = document.getElementById("container");
+ *  var globe = new DAT.Globe(container);
+ *
+ */
 DAT.Globe = function(container, opts) {
   opts = opts || {};
   
@@ -245,15 +262,65 @@ DAT.Globe = function(container, opts) {
     }
   }
 
-  function latToRadian(lat) {
+  /**
+   * Method to convert latitude to X coordinate on the globe's surface.
+   *
+   * @param {float} lat - Latitude in decimal coordinates.
+   * @return {float} X coordinate on the globe's surface.
+   *
+   * @example
+   *
+   *     latToSphericalCoords(19.076090);
+   *
+   */
+  function latToSphericalCoords(lat) {
     return (90 - lat) * Math.PI / 180;
   }
 
-  function lngToRadian(lng) {
+  /**
+   * Method to convert longitude to Y coordinate on the globe's surface.
+   *
+   * @param {float} lng - Longitude in decimal coordinates.
+   * @return {float} Y coordinate on the globe's surface.
+   *
+   * @example
+   *
+   *     lngToSphericalCoords(72.877426);
+   *
+   */
+  function lngToSphericalCoords(lng) {
     return (180 - lng) * Math.PI / 180;
   }
 
-  // geojson, direct array feature format
+  /**
+   * Parses an array or geojson object representing a single point to a threejs 3D object.
+   *
+   * @param {geojson} input - An array or geojson object representing a point on the map.
+   * @param {Object} opts - An object containing configuration parameters.
+   *                        'color': Color for the mesh (default: 0xffff00).
+   *                        'size': Size for the mesh (default: 2).
+   * @return {THREE.Mesh} A threejs 3D object (as a sphere).
+   *
+   * @example
+   *      
+   *     // As array
+   *     var posA = [28.644800, 77.216721];
+   *     var meshA = globe.parsePoint(posA);
+   *
+   *    // As geojson
+   *    var posB =  {
+   *                  "type": "Feature",
+   *                  "geometry": {
+   *                    "type": "Point",
+   *                    "coordinates": [125.6, 10.1]
+   *                  },
+   *                  "properties": {
+   *                    "name": "Dinagat Islands"
+   *                  }
+   *                };
+   *     var meshB = globe.parsePoint(posB);
+   *
+   */
   function parsePoint(input, opts) {
 
     var coords = null;
@@ -270,8 +337,8 @@ DAT.Globe = function(container, opts) {
     var lat = coords[0];
     var lng = coords[1];
 
-    var phi = latToRadian(lat);
-    var theta = lngToRadian(lng);
+    var phi = latToSphericalCoords(lat);
+    var theta = lngToSphericalCoords(lng);
 
     var sz = (opts !== undefined && opts.size) ? opts.size : 2;
     var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
@@ -286,7 +353,40 @@ DAT.Globe = function(container, opts) {
     return point;
   }
 
-  // geojson, direct array feature format
+  /**
+   * Parses an array or geojson object representing a multiple points to a threejs 3D object.
+   *
+   * @param {geojson} input - An array or geojson object representing multiple points on the map.
+   * @param {Object} opts - An object containing configuration parameters.
+   *                        'color': Color for the mesh (default: 0xffff00).
+   *                        'size': Size for the mesh (default: 2).
+   * @return {THREE.Object3D} A threejs 3D object (as a collection of spheres inside an THREE.Object3D).
+   *
+   * @example
+   *      
+   *     // As array
+   *     var posA = [ [55.751244, 37.618423], [30.266666, -97.733330] ];
+   *     var objA = globe.parseMultiPoint(posA);
+   *
+   *    // As geojson
+   *    var posB =  {
+   *                  "type": "Feature",
+   *                  "geometry": {
+   *                    "type": "MultiPoint",
+   *                    "coordinates": [
+   *                      [40.730610, -73.935242],
+   *                      [51.5085297, -0.12574],
+   *                      [35.6894989, 139.6917114],
+   *                      [48.8534088, 2.3487999]
+   *                    ]
+   *                  },
+   *                  "properties": {
+   *                    "name": "Fallen Cities"
+   *                  }
+   *                }
+   *     var objB = globe.parseMultiPoint(posB);
+   *
+   */
   function parseMultiPoint(input, opts) {
 
     var coords = null;
@@ -304,8 +404,8 @@ DAT.Globe = function(container, opts) {
       var lat = coords[ptIdx][0];
       var lng = coords[ptIdx][1];
 
-      var phi = latToRadian(lat);
-      var theta = lngToRadian(lng);
+      var phi = latToSphericalCoords(lat);
+      var theta = lngToSphericalCoords(lng);
 
       var sz = (opts !== undefined && opts.size) ? opts.size : 2;
       var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
@@ -323,7 +423,44 @@ DAT.Globe = function(container, opts) {
     return points;
   }
 
-  // geojson, direct array feature format
+  /**
+   * Parses an array or geojson object representing a single line to a threejs 3D line.
+   * Currently only supports lines with a start and end point.
+   *
+   * @param {geojson} input - An array or geojson object representing a line on the map.
+   * @param {Object} opts - An object containing configuration parameters.
+   *                        'color': Color for the line (default: 0xffffff).
+   * @return {THREE.Line} A threejs 3D line.
+   *
+   * @example
+   *      
+   *     // As array
+   *     var lnA = [ [14.6042004, 120.9822006], [22.3964272, 114.1094971] ];
+   *     var lineA = globe.parseLineString(lnA);
+   *
+   *    // As geojson
+   *    var lnB = {
+   *                "type": "Feature",
+   *                "geometry": {
+   *                  "type": "LineString",
+   *                  "coordinates": [
+   *                    [
+   *                      29.301449060440063,
+   *                      -31.952162238024957
+   *                    ],
+   *                    [
+   *                      69.24430757761002,
+   *                      34.63320791137959
+   *                    ]
+   *                  ]
+   *                },
+   *                "properties": {
+   *                  "name": "Magellan Line"
+   *                }
+   *              }
+   *     var lineB = globe.parseLineString(lnB);
+   *
+   */
   function parseLineString(input, opts) {
 
     var inPts = null;
@@ -357,8 +494,8 @@ DAT.Globe = function(container, opts) {
     do {
       var lat = pts[c][0];
       var lng = pts[c][1];
-      var phi = latToRadian(lat);
-      var theta = lngToRadian(lng);
+      var phi = latToSphericalCoords(lat);
+      var theta = lngToSphericalCoords(lng);
       var vt = new THREE.Vector3();
       vt.x = 200 * Math.sin(phi) * Math.cos(theta);
       vt.y = 200 * Math.cos(phi);
@@ -371,7 +508,56 @@ DAT.Globe = function(container, opts) {
     return line;
   }
 
-  // geojson, direct array feature format
+  /**
+   * Parses an array or geojson object representing multiple lines to threejs 3D lines.
+   * Currently only supports lines with a start and end point.
+   *
+   * @param {geojson} input - An array or geojson object representing multiple lines on the map.
+   * @param {Object} opts - An object containing configuration parameters.
+   *                        'color': Color for the line (default: 0xffffff).
+   * @return {THREE.Object3D} A threejs 3D object (as a collection of lines inside an THREE.Object3D).
+   *
+   * @example
+   *      
+   *     // As array
+   *     var lnA = [ [ [14.6042004, 120.9822006], [22.3964272, 114.1094971] ], [ [11.5624504, 104.916008], [10.82302, 106.6296463] ] ];
+   *     var lineA = globe.parseMultiLineString(lnA);
+   *
+   *    // As geojson
+   *    var lnB = {
+   *                "type": "Feature",
+   *                "geometry": {
+   *                  "type": "MultiLineString",
+   *                  "coordinates": [
+   *                    [ 
+   *                      [
+   *                        32.506026327610016,
+   *                        15.580710739162123
+   *                      ],
+   *                      [
+   *                        77.44035622384729,
+   *                        12.983147716796577
+   *                      ]
+   *                    ],
+   *                    [ 
+   *                      [
+   *                        88.29484841134729,
+   *                        22.553147478403194
+   *                      ],
+   *                      [
+   *                        74.4233498564023,
+   *                        42.924251753870685
+   *                      ]
+   *                    ]
+   *                  ]
+   *                },
+   *                "properties": {
+   *                  "name": "Incense License"
+   *                }
+   *              }
+   *     var lineB = globe.parseMultiLineString(lnB);
+   *
+   */
   function parseMultiLineString(input, opts) {
 
     var inLns = null;
@@ -409,8 +595,8 @@ DAT.Globe = function(container, opts) {
       do {
         var lat = pts[c][0];
         var lng = pts[c][1];
-        var phi = latToRadian(lat);
-        var theta = lngToRadian(lng);
+        var phi = latToSphericalCoords(lat);
+        var theta = lngToSphericalCoords(lng);
         var vt = new THREE.Vector3();
         vt.x = 200 * Math.sin(phi) * Math.cos(theta);
         vt.y = 200 * Math.cos(phi);
@@ -426,12 +612,53 @@ DAT.Globe = function(container, opts) {
     return lines;
   }
 
+  /**
+   * Add the given geojson object to the map.
+   * Currently supports only a single feature json containing Point, MultiPoint, Line or MultiLine.
+   *
+   * @param {Geojson} geoJson - Geojson object to be added.
+   *
+   * @example
+   *
+   *    var geoJson = {
+   *                   "type": "Feature",
+   *                   "geometry": {
+   *                     "type": "Point",
+   *                     "coordinates": [125.6, 10.1]
+   *                   },
+   *                   "properties": {
+   *                     "name": "Dinagat Islands"
+   *                   }
+   *                 };
+   *    globe.addGeoJson(geoJson);
+   *
+   */
   function addGeoJson(geoJson) {
-
     var feat = parseFeature(geoJson);
     scene.add(feat);
-
   }
+
+  /**
+   * Parses a given node in a geojson object and returns corresponding threejs object.
+   * Currently supports only a single feature json containing Point, MultiPoint, Line or MultiLine.
+   *
+   * @param {Geojson} geoJsonNode - Geojson node to be parsed.
+   *
+   * @example
+   *
+   *    var node =   {
+   *                   "type": "Feature",
+   *                   "geometry": {
+   *                     "type": "Point",
+   *                     "coordinates": [125.6, 10.1]
+   *                   },
+   *                   "properties": {
+   *                     "name": "Dinagat Islands"
+   *                   }
+   *                 };
+   *    var threeJsObj = globe.parseFeature(node);
+   *
+   */
 
   function parseFeature(node) {
     var ftType = node.geometry.type;

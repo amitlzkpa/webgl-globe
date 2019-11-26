@@ -44,8 +44,11 @@
         //   renderWorldCopies: false
         // });
 
+        var opts = {
+            // colorFn: 0xff0000
+        }
         var container = document.getElementById("container");
-        var globe = new DAT.Globe(container);
+        var globe = new DAT.Globe(container, opts);
         globe.animate();
 
         let pos_mumbai = [19.076090, 72.877426];
