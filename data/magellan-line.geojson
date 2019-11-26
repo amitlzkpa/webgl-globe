@@ -1,0 +1,19 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [
+      [
+        29.301449060440063,
+        -31.952162238024957
+      ],
+      [
+        69.24430757761002,
+        34.63320791137959
+      ]
+    ]
+  },
+  "properties": {
+    "name": "Magellan Line"
+  }
+}
