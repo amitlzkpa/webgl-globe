@@ -21,7 +21,7 @@ var DAT = DAT || {};
  * @param {DOMObject} container - The container to hold the scene.
  * @param {Object} opts - An object containing configuration parameters for the globe.
  *                        'colorFn': A function for mapping the globe's colors based on HSL values.
- *                        'imgDir': Path to directory containing image to be used as texture for the globe.
+ *                        'textureImage': Path to image to be used as texture.
  *                        'autoStart': If the globe object should auto-start (default true).
  * @return {DAT.Globe} An instance of the globe.
  *
@@ -40,7 +40,8 @@ DAT.Globe = function(container, opts) {
     c.setHSL( ( 0.6 - ( x * 0.5 ) ), 1.0, 0.5 );
     return c;
   };
-  var imgDir = opts.imgDir || '/globe/';
+  var textureImage = opts.textureImage || '';
+  console.log(textureImage);
 
   var Shaders = {
     'earth' : {
@@ -124,7 +125,7 @@ DAT.Globe = function(container, opts) {
     shader = Shaders['earth'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-    uniforms['texture'].value = THREE.ImageUtils.loadTexture(imgDir+'world.jpg');
+    uniforms['texture'].value = THREE.ImageUtils.loadTexture(textureImage);
 
     material = new THREE.ShaderMaterial({
 
@@ -786,7 +787,6 @@ DAT.Globe = function(container, opts) {
   }
   
   init();
-  console.log(autoStart);
   if (autoStart) {
     animate();
   }
