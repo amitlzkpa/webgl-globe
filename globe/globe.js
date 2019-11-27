@@ -262,6 +262,102 @@ DAT.Globe = function(container, opts) {
     }
   }
 
+  function onMouseDown(event) {
+    event.preventDefault();
+
+    container.addEventListener('mousemove', onMouseMove, false);
+    container.addEventListener('mouseup', onMouseUp, false);
+    container.addEventListener('mouseout', onMouseOut, false);
+
+    mouseOnDown.x = - event.clientX;
+    mouseOnDown.y = event.clientY;
+
+    targetOnDown.x = target.x;
+    targetOnDown.y = target.y;
+
+    container.style.cursor = 'move';
+  }
+
+  function onMouseMove(event) {
+    mouse.x = - event.clientX;
+    mouse.y = event.clientY;
+
+    var zoomDamp = distance/1000;
+
+    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
+    target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
+
+    target.y = target.y > PI_HALF ? PI_HALF : target.y;
+    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
+  }
+
+  function onMouseUp(event) {
+    container.removeEventListener('mousemove', onMouseMove, false);
+    container.removeEventListener('mouseup', onMouseUp, false);
+    container.removeEventListener('mouseout', onMouseOut, false);
+    container.style.cursor = 'auto';
+  }
+
+  function onMouseOut(event) {
+    container.removeEventListener('mousemove', onMouseMove, false);
+    container.removeEventListener('mouseup', onMouseUp, false);
+    container.removeEventListener('mouseout', onMouseOut, false);
+  }
+
+  function onMouseWheel(event) {
+    event.preventDefault();
+    if (overRenderer) {
+      zoom(event.wheelDeltaY * 0.3);
+    }
+    return false;
+  }
+
+  function onDocumentKeyDown(event) {
+    switch (event.keyCode) {
+      case 38:
+        zoom(100);
+        event.preventDefault();
+        break;
+      case 40:
+        zoom(-100);
+        event.preventDefault();
+        break;
+    }
+  }
+
+  function onWindowResize( event ) {
+    camera.aspect = container.offsetWidth / container.offsetHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( container.offsetWidth, container.offsetHeight );
+  }
+
+  function zoom(delta) {
+    distanceTarget -= delta;
+    distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
+    distanceTarget = distanceTarget < 210 ? 210 : distanceTarget;
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    render();
+  }
+
+  function render() {
+    zoom(curZoomSpeed);
+
+    rotation.x += (target.x - rotation.x) * 0.1;
+    rotation.y += (target.y - rotation.y) * 0.1;
+    distance += (distanceTarget - distance) * 0.3;
+
+    camera.position.x = distance * Math.sin(rotation.x) * Math.cos(rotation.y);
+    camera.position.y = distance * Math.sin(rotation.y);
+    camera.position.z = distance * Math.cos(rotation.x) * Math.cos(rotation.y);
+
+    camera.lookAt(mesh.position);
+
+    renderer.render(scene, camera);
+  }
+
   /**
    * Method to convert latitude to X coordinate on the globe's surface.
    *
@@ -659,7 +755,6 @@ DAT.Globe = function(container, opts) {
    *    var threeJsObj = globe.parseFeature(node);
    *
    */
-
   function parseFeature(node) {
     var ftType = node.geometry.type;
     var ret = null;
@@ -688,105 +783,8 @@ DAT.Globe = function(container, opts) {
     return ret;
   }
 
-  function onMouseDown(event) {
-    event.preventDefault();
-
-    container.addEventListener('mousemove', onMouseMove, false);
-    container.addEventListener('mouseup', onMouseUp, false);
-    container.addEventListener('mouseout', onMouseOut, false);
-
-    mouseOnDown.x = - event.clientX;
-    mouseOnDown.y = event.clientY;
-
-    targetOnDown.x = target.x;
-    targetOnDown.y = target.y;
-
-    container.style.cursor = 'move';
-  }
-
-  function onMouseMove(event) {
-    mouse.x = - event.clientX;
-    mouse.y = event.clientY;
-
-    var zoomDamp = distance/1000;
-
-    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
-    target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
-
-    target.y = target.y > PI_HALF ? PI_HALF : target.y;
-    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
-  }
-
-  function onMouseUp(event) {
-    container.removeEventListener('mousemove', onMouseMove, false);
-    container.removeEventListener('mouseup', onMouseUp, false);
-    container.removeEventListener('mouseout', onMouseOut, false);
-    container.style.cursor = 'auto';
-  }
-
-  function onMouseOut(event) {
-    container.removeEventListener('mousemove', onMouseMove, false);
-    container.removeEventListener('mouseup', onMouseUp, false);
-    container.removeEventListener('mouseout', onMouseOut, false);
-  }
-
-  function onMouseWheel(event) {
-    event.preventDefault();
-    if (overRenderer) {
-      zoom(event.wheelDeltaY * 0.3);
-    }
-    return false;
-  }
-
-  function onDocumentKeyDown(event) {
-    switch (event.keyCode) {
-      case 38:
-        zoom(100);
-        event.preventDefault();
-        break;
-      case 40:
-        zoom(-100);
-        event.preventDefault();
-        break;
-    }
-  }
-
-  function onWindowResize( event ) {
-    camera.aspect = container.offsetWidth / container.offsetHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize( container.offsetWidth, container.offsetHeight );
-  }
-
-  function zoom(delta) {
-    distanceTarget -= delta;
-    distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
-    distanceTarget = distanceTarget < 210 ? 210 : distanceTarget;
-  }
-
-  function animate() {
-    requestAnimationFrame(animate);
-    render();
-  }
-
-  function render() {
-    zoom(curZoomSpeed);
-
-    rotation.x += (target.x - rotation.x) * 0.1;
-    rotation.y += (target.y - rotation.y) * 0.1;
-    distance += (distanceTarget - distance) * 0.3;
-
-    camera.position.x = distance * Math.sin(rotation.x) * Math.cos(rotation.y);
-    camera.position.y = distance * Math.sin(rotation.y);
-    camera.position.z = distance * Math.cos(rotation.x) * Math.cos(rotation.y);
-
-    camera.lookAt(mesh.position);
-
-    renderer.render(scene, camera);
-  }
-
   init();
   this.animate = animate;
-
 
   this.__defineGetter__('time', function() {
     return this._time || 0;
