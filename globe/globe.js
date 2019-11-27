@@ -41,7 +41,6 @@ DAT.Globe = function(container, opts) {
     return c;
   };
   var textureImage = opts.textureImage || '';
-  console.log(textureImage);
 
   var Shaders = {
     'earth' : {
@@ -360,6 +359,21 @@ DAT.Globe = function(container, opts) {
 
     renderer.render(scene, camera);
   }
+
+
+
+  
+  // ----------------------------------------------------------------------------
+  /*
+                   _                 
+   __ _  ___  ___ (_)___  ___  _ __  
+  / _` |/ _ \/ _ \| / __|/ _ \| '_ \ 
+ | (_| |  __/ (_) | \__ \ (_) | | | |
+  \__, |\___|\___// |___/\___/|_| |_|
+  |___/         |__/                 
+
+  */
+
 
   /**
    * Method to convert latitude to X coordinate on the globe's surface.
@@ -785,11 +799,35 @@ DAT.Globe = function(container, opts) {
     }
     return ret;
   }
+
+
+
+
+  // ----------------------------------------------------------------------------
+  /*
+                _     _ _                            
+    _ __  _   _| |__ | (_) ___  __   ____ _ _ __ ___ 
+  | '_ \| | | | '_ \| | |/ __| \ \ / / _` | '__/ __|
+  | |_) | |_| | |_) | | | (__   \ V / (_| | |  \__ \
+  | .__/ \__,_|_.__/|_|_|\___|   \_/ \__,_|_|  |___/
+  |_|                                               
+
+  */
+
   
-  init();
-  if (autoStart) {
-    animate();
-  }
+  this.animate = animate;
+  this.addData = addData;
+  this.parsePoint = parsePoint;
+  this.parseMultiPoint = parseMultiPoint;
+  this.parseLineString = parseLineString;
+  this.parseMultiLineString = parseMultiLineString;
+  this.addGeoJson = addGeoJson;
+  this.createPoints = createPoints;
+  this.renderer = renderer;
+  this.scene = scene;
+  this.mesh = groundMesh;
+  
+
   
   this.__defineGetter__('time', function() {
     return this._time || 0;
@@ -818,19 +856,27 @@ DAT.Globe = function(container, opts) {
     this.points.morphTargetInfluences[index] = leftover;
     this._time = t;
   });
+  
 
-  this.animate = animate;
-  this.addData = addData;
-  this.parsePoint = parsePoint;
-  this.parseMultiPoint = parseMultiPoint;
-  this.parseLineString = parseLineString;
-  this.parseMultiLineString = parseMultiLineString;
-  this.addGeoJson = addGeoJson;
-  this.createPoints = createPoints;
-  this.renderer = renderer;
-  this.scene = scene;
-  this.mesh = groundMesh;
 
+
+  // ----------------------------------------------------------------------------
+  /*
+    _       _ _   _       _ _         
+  (_)_ __ (_) |_(_) __ _| (_)_______ 
+  | | '_ \| | __| |/ _` | | |_  / _ \
+  | | | | | | |_| | (_| | | |/ /  __/
+  |_|_| |_|_|\__|_|\__,_|_|_/___\___|
+
+  */
+  
+  init();
+  if (autoStart) {
+    animate();
+  }
+
+
+  // ----------------------------------------------------------------------------
   return this;
 
 };
