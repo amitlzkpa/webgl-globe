@@ -22,6 +22,7 @@ var DAT = DAT || {};
  * @param {Object} opts - An object containing configuration parameters for the globe.
  *                        'colorFn': A function for mapping the globe's colors based on HSL values.
  *                        'imgDir': Path to directory containing image to be used as texture for the globe.
+ *                        'autoStart': If the globe object should auto-start (default true).
  * @return {DAT.Globe} An instance of the globe.
  *
  * @example
@@ -32,6 +33,7 @@ var DAT = DAT || {};
  */
 DAT.Globe = function(container, opts) {
   opts = opts || {};
+  var autoStart = typeof opts.autoStart === "undefined" || opts.autoStart === true;
   
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
@@ -782,14 +784,17 @@ DAT.Globe = function(container, opts) {
     }
     return ret;
   }
-
+  
   init();
-  this.animate = animate;
-
+  console.log(autoStart);
+  if (autoStart) {
+    animate();
+  }
+  
   this.__defineGetter__('time', function() {
     return this._time || 0;
   });
-
+  
   this.__defineSetter__('time', function(t) {
     var validMorphs = [];
     var morphDict = this.points.morphTargetDictionary;
@@ -814,6 +819,7 @@ DAT.Globe = function(container, opts) {
     this._time = t;
   });
 
+  this.animate = animate;
   this.addData = addData;
   this.parsePoint = parsePoint;
   this.parseMultiPoint = parseMultiPoint;
