@@ -119,7 +119,7 @@
         var json;
 
         json = await fetch('/data/dinagat.geojson');
-        globe.addGeoJson(await json.json());
+        globe.addFeature(await json.json());
 
 
         json = await fetch('/data/magellan-line.geojson');
@@ -135,11 +135,11 @@
 
 
         json = await fetch('/data/sample.geojson');
-        globe.addGeoJson(await json.json());
+        globe.addFeatureCollection(await json.json());
 
 
-        json = await fetch('/data/world.geojson');
-        globe.addGeoJson(await json.json());
+        // json = await fetch('/data/world.geojson');
+        // globe.addGeoJson(await json.json());
         
         
         

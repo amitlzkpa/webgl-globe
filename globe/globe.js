@@ -527,10 +527,10 @@ function lngToSphericalCoords(lng) {
    *                  "geometry": {
    *                    "type": "MultiPoint",
    *                    "coordinates": [
-   *                      [40.730610, -73.935242],
-   *                      [51.5085297, -0.12574],
-   *                      [35.6894989, 139.6917114],
-   *                      [48.8534088, 2.3487999]
+   *                      [-73.935242, 40.730610],
+   *                      [-0.12574, 51.5085297],
+   *                      [139.6917114, 35.6894989],
+   *                      [2.3487999, 48.8534088]
    *                    ]
    *                  },
    *                  "properties": {
@@ -876,7 +876,10 @@ function lngToSphericalCoords(lng) {
         break;
       }
     }
-    return ret;
+
+    var addedObj = addToActiveGeoJsons(ret);
+    
+    return addedObj;
   }
 
   /**
@@ -935,7 +938,10 @@ function lngToSphericalCoords(lng) {
       var f = addFeature(feats[i]);
       if (f) ret.add(f);
     }
-    return ret;
+
+    var addedObj = addToActiveGeoJsons(ret);
+    
+    return addedObj;
   }
   
 
