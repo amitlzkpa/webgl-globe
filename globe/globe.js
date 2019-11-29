@@ -20,6 +20,7 @@ var DAT = DAT || {};
  *
  * @param {DOMObject} container - The container to hold the scene.
  * @param {Object} opts - An object containing configuration parameters for the globe.
+ *                        'earthRadius': Radius of the earth's surface in threejs units. (default = 200)
  *                        'colorFn': A function for mapping the globe's colors based on HSL values.
  *                        'textureImage': Path to image to be used as texture.
  *                        'autoStart': If the globe object should auto-start (default true).
@@ -34,6 +35,7 @@ var DAT = DAT || {};
 DAT.Globe = function(container, opts) {
   opts = opts || {};
   var autoStart = typeof opts.autoStart === "undefined" || opts.autoStart === true;
+  var earthRadius = opts.earthRadius || 200;
   
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
@@ -119,7 +121,7 @@ DAT.Globe = function(container, opts) {
 
     scene = new THREE.Scene();
 
-    var geometry = new THREE.SphereGeometry(200, 40, 30);
+    var geometry = new THREE.SphereGeometry(earthRadius, 40, 30);
 
     shader = Shaders['earth'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -480,10 +482,7 @@ function lngToSphericalCoords(lng) {
     if (input.constructor === Array) {
       coords = input;
     } else {
-      // coordinate format is flipped in geojsons
-      coords = [];
-      coords.push(input.geometry.coordinates[1]);
-      coords.push(input.geometry.coordinates[0]);
+      coords = input.geometry.coordinates;
     }
 
     var lat = coords[0];
@@ -498,13 +497,13 @@ function lngToSphericalCoords(lng) {
     var material = new THREE.MeshBasicMaterial( {color: color} );
     var point = new THREE.Mesh( geometry, material );
 
-    point.position.x = 203 * Math.sin(phi) * Math.cos(theta);
-    point.position.y = 203 * Math.cos(phi);
-    point.position.z = 203 * Math.sin(phi) * Math.sin(theta);
+    point.position.x = earthRadius * Math.sin(phi) * Math.cos(theta);
+    point.position.y = earthRadius * Math.cos(phi);
+    point.position.z = earthRadius * Math.sin(phi) * Math.sin(theta);
 
-    var mesh = addToActiveGeoJsons(point);
+    var addedObj = addToActiveGeoJsons(point);
     
-    return mesh;
+    return addedObj;
   }
 
   /**
@@ -661,9 +660,9 @@ function lngToSphericalCoords(lng) {
       var phi = latToSphericalCoords(lat);
       var theta = lngToSphericalCoords(lng);
       var vt = new THREE.Vector3();
-      vt.x = 200 * Math.sin(phi) * Math.cos(theta);
-      vt.y = 200 * Math.cos(phi);
-      vt.z = 200 * Math.sin(phi) * Math.sin(theta);
+      vt.x = earthRadius * Math.sin(phi) * Math.cos(theta);
+      vt.y = earthRadius * Math.cos(phi);
+      vt.z = earthRadius * Math.sin(phi) * Math.sin(theta);
       geometry.vertices.push( vt );
       c++;
     } while(c < pts.length)
@@ -777,9 +776,9 @@ function lngToSphericalCoords(lng) {
         var phi = latToSphericalCoords(lat);
         var theta = lngToSphericalCoords(lng);
         var vt = new THREE.Vector3();
-        vt.x = 200 * Math.sin(phi) * Math.cos(theta);
-        vt.y = 200 * Math.cos(phi);
-        vt.z = 200 * Math.sin(phi) * Math.sin(theta);
+        vt.x = earthRadius * Math.sin(phi) * Math.cos(theta);
+        vt.y = earthRadius * Math.cos(phi);
+        vt.z = earthRadius * Math.sin(phi) * Math.sin(theta);
         geometry.vertices.push( vt );
         c++;
       } while(c < pts.length)
