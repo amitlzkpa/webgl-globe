@@ -133,9 +133,9 @@
         
 
 
-        // let json = await fetch('/data/dinagat.geojson');
-        // let gj = await json.json();
-        // globe.addGeoJson(gj);
+        let json = await fetch('/data/dinagat.geojson');
+        let gj = await json.json();
+        globe.addGeoJson(gj);
 
 
         // let json = await fetch('/data/magellan-line.geojson');
@@ -153,9 +153,9 @@
         // globe.addGeoJson(gj);
 
 
-        let json = await fetch('/data/sample.geojson');
-        let gj = await json.json();
-        globe.addGeoJson(gj);
+        let mason = await fetch('/data/sample.geojson');
+        let mj = await mason.json();
+        globe.addGeoJson(mj);
 
 
         // document.addEventListener("keyup", function (event) {

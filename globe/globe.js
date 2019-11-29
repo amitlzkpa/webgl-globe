@@ -811,10 +811,23 @@ function lngToSphericalCoords(lng) {
    *
    */
   function addGeoJson(geoJson) {
-    // var feat = parseFeature(geoJson);
-    // scene.add(feat);
-    var feat = parseFeatureCollection(geoJson);
-    scene.add(feat);
+
+    switch(geoJson.type) {
+      case "Feature": {
+        var feat = parseFeature(geoJson);
+        scene.add(feat);
+        break;
+      }
+      case "FeatureCollection": {
+        var feat = parseFeatureCollection(geoJson);
+        scene.add(feat);
+        break;
+      }
+      default: {
+        throw (`Unknown geojson type: ${geoJson}`)
+        break;
+      }
+    }
   }
 
   /**
