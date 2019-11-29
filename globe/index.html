@@ -93,23 +93,23 @@
         // globe.addPoint( pos_darwin, {size: 4} );
 
 
-        globe.addLineString([pos_mumbai, pos_moscow], {color: 0x0000ff});
-        globe.addLineString([pos_mumbai, pos_vizag], {color: 0x0000ff});
-        globe.addLineString([pos_mumbai, pos_delhi], {color: 0xff0000});
-        globe.addLineString([pos_mumbai, pos_chennai], {color: 0xfff000});
-        globe.addLineString([pos_darwin, pos_cebu], {color: 0xff0000});
-        globe.addLineString([pos_napydaw, pos_vizag], {color: 0xff0000});
-        globe.addLineString([pos_chennai, pos_portblair], {color: 0xff0000});
-        globe.addLineString([pos_singapore, pos_bangkok], {color: 0xff0000});
-        globe.addLineString([pos_bangkok, pos_napydaw], {color: 0xff0000});
-        globe.addLineString([pos_tonga, pos_portmoresby], {color: 0xff0000});
-        globe.addLineString([pos_hongkong, pos_saigon], {color: 0xff0000});
-        globe.addLineString([pos_manila, pos_portmoresby], {color: 0xff0000});
-        globe.addLineString([pos_darwin, pos_jakarta], {color: 0xff0000});
-        globe.addLineString([pos_phnompenh, pos_bangkok], {color: 0xff0000});
-        globe.addLineString([pos_cebu, pos_jakarta], {color: 0xff0000});
-        globe.addLineString([pos_darwin, pos_saigon], {color: 0xff0000});
-        globe.addLineString([pos_cebu, pos_manila], {color: 0xff0000});
+        // globe.addLineString([pos_mumbai, pos_moscow], {color: 0x0000ff});
+        // globe.addLineString([pos_mumbai, pos_vizag], {color: 0x0000ff});
+        // globe.addLineString([pos_mumbai, pos_delhi], {color: 0xff0000});
+        // globe.addLineString([pos_mumbai, pos_chennai], {color: 0xfff000});
+        // globe.addLineString([pos_darwin, pos_cebu], {color: 0xff0000});
+        // globe.addLineString([pos_napydaw, pos_vizag], {color: 0xff0000});
+        // globe.addLineString([pos_chennai, pos_portblair], {color: 0xff0000});
+        // globe.addLineString([pos_singapore, pos_bangkok], {color: 0xff0000});
+        // globe.addLineString([pos_bangkok, pos_napydaw], {color: 0xff0000});
+        // globe.addLineString([pos_tonga, pos_portmoresby], {color: 0xff0000});
+        // globe.addLineString([pos_hongkong, pos_saigon], {color: 0xff0000});
+        // globe.addLineString([pos_manila, pos_portmoresby], {color: 0xff0000});
+        // globe.addLineString([pos_darwin, pos_jakarta], {color: 0xff0000});
+        // globe.addLineString([pos_phnompenh, pos_bangkok], {color: 0xff0000});
+        // globe.addLineString([pos_cebu, pos_jakarta], {color: 0xff0000});
+        // globe.addLineString([pos_darwin, pos_saigon], {color: 0xff0000});
+        // globe.addLineString([pos_cebu, pos_manila], {color: 0xff0000});
 
 
         // let json = await fetch('/data/dinagat.geojson');
@@ -127,9 +127,9 @@
         // globe.addGeoJson(gj);
 
 
-        // let json = await fetch('/data/magellan-lines.geojson');
-        // let gj = await json.json();
-        // globe.addGeoJson(gj);
+        let json = await fetch('/data/magellan-lines.geojson');
+        let gj = await json.json();
+        globe.addGeoJson(gj);
 
 
         // let json = await fetch('/data/sample.geojson');

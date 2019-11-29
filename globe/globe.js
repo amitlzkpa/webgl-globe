@@ -425,7 +425,9 @@ function lngToSphericalCoords(lng) {
 
   */
 
-
+  /**
+   * 
+   */
   var activeGeoJsons = {};
 
 
@@ -711,6 +713,10 @@ function lngToSphericalCoords(lng) {
    *                      [
    *                        74.4233498564023,
    *                        42.924251753870685
+   *                      ],
+   *                      [
+   *                        94.4233498564023,
+   *                        49.924251753870685
    *                      ]
    *                    ]
    *                  ]
@@ -738,22 +744,30 @@ function lngToSphericalCoords(lng) {
 
     for(let inLnsIdx = 0; inLnsIdx < inLns.length; inLnsIdx++)
     {
+
       var inPts = inLns[inLnsIdx];
-      if (inPts.length != 2) throw ('Need 2 points for a line');
+      if (inPts.length < 2) throw ('Need at least 2 points for a line');
       var divs = 100;
       // var d = Math.sqrt(Math.pow(inPts[1][0] - inPts[0][0], 2) + Math.pow(inPts[1][0] - inPts[0][0], 2));
       // console.log(d);
-      var deltaLat = (inPts[1][0] - inPts[0][0]) / divs;
-      var deltaLng = (inPts[1][1] - inPts[0][1]) / divs;
 
       var pts = [];
 
-      for(var j = 0; j<divs; j++) {
-        pts.push([inPts[0][0] + (j * deltaLat), inPts[0][1] + (j * deltaLng)]);
+      var idx = 1;
+      while(idx < inPts.length) {
+        var secondPt = inPts[idx];
+        var firstPt = inPts[idx-1];
+      
+        var deltaLat = (secondPt[0] - firstPt[0]) / divs;
+        var deltaLng = (secondPt[1] - firstPt[1]) / divs;
+  
+        for(var j = 0; j<divs; j++) {
+          pts.push([firstPt[0] + (j * deltaLat), firstPt[1] + (j * deltaLng)]);
+        }
+        idx++;
       }
-      pts.push(inPts[inPts.length-1])
 
-      var col = (opts && opts.color) ? opts.color : 0xffffff
+      var col = opts.color || 0xffffff
       var material = new THREE.LineBasicMaterial({ color: col });
       var c=0;
       var geometry = new THREE.Geometry();
