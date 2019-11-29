@@ -52,64 +52,85 @@
         var container = document.getElementById("container");
         var globe = new DAT.Globe(container, opts);
 
-        let pos_mumbai = [19.076090, 72.877426];
-        let pos_delhi = [28.644800, 77.216721];
-        let pos_moscow = [55.751244, 37.618423];
-        let pos_austin = [30.266666, -97.733330];
-        let pos_manila = [14.6042004, 120.9822006];
-        let pos_hongkong = [22.3964272, 114.1094971];
-        let pos_cebu = [10.31672, 123.8907089];
-        let pos_singapore = [1.290270, 103.851959];
-        let pos_bangkok = [13.7539797, 100.501442];
-        let pos_phnompenh = [11.5624504, 104.916008];
-        let pos_saigon = [10.82302, 106.6296463];
-        let pos_jakarta = [-6.2146201, 106.8451309];
-        let pos_tonga = [-21.1789856, -175.1982422];
-        let pos_portmoresby = [-9.44314, 147.179718];
-        let pos_napydaw = [19.7450008, 96.1297226];
-        let pos_portblair = [11.623377, 92.726486];
-        let pos_chennai = [13.0878401, 80.2784729];
-        let pos_vizag = [17.68009, 83.2016068];
-        let pos_darwin = [-12.462827, 130.841782];
+        // 
+        let pos_mumbai = [72.877426, 19.076090];
+        let pos_delhi = [77.216721, 28.644800];
+        let pos_moscow = [37.618423, 55.751244];
+        let pos_austin = [-97.733330, 30.266666];
+        let pos_manila = [120.9822006, 14.6042004];
+        let pos_hongkong = [114.1094971, 22.3964272];
+        let pos_cebu = [123.8907089, 10.31672];
+        let pos_singapore = [103.851959, 1.290270];
+        let pos_bangkok = [100.501442, 13.7539797];
+        let pos_phnompenh = [104.916008, 11.5624504];
+        let pos_saigon = [106.6296463, 10.82302];
+        let pos_jakarta = [106.8451309, -6.2146201];
+        let pos_tonga = [-175.1982422, -21.1789856];
+        let pos_portmoresby = [147.179718, -9.44314];
+        let pos_napydaw = [96.1297226, 19.7450008];
+        let pos_portblair = [92.726486, 11.623377];
+        let pos_chennai = [80.2784729, 13.0878401];
+        let pos_vizag = [83.2016068, 17.68009];
+        let pos_darwin = [130.841782, -12.462827];
 
         globe.addPoint( pos_mumbai, {size: 4} );
-        // globe.addPoint( pos_delhi, {size: 2} );
-        // globe.addPoint( pos_moscow, {size: 2} );
-        // globe.addPoint( pos_austin );
-        // globe.addPoint( pos_manila );
-        // globe.addPoint( pos_hongkong, {size: 4} );
-        // globe.addPoint( pos_cebu, {size: 2} );
-        // globe.addPoint( pos_singapore, {size: 2} );
-        // globe.addPoint( pos_bangkok, {size: 2} );
-        // globe.addPoint( pos_phnompenh, {size: 2} );
-        // globe.addPoint( pos_saigon, {size: 4} );
-        // globe.addPoint( pos_jakarta, {size: 2} );
-        // globe.addPoint( pos_tonga, {size: 2} );
-        // globe.addPoint( pos_portmoresby, {size: 3} );
-        // globe.addPoint( pos_napydaw, {size: 3} );
-        // globe.addPoint( pos_portblair, {size: 2} );
-        // globe.addPoint( pos_chennai, {size: 2} );
-        // globe.addPoint( pos_vizag, {size: 3} );
-        // globe.addPoint( pos_darwin, {size: 4} );
+        globe.addPoint( pos_delhi, {size: 2} );
+        globe.addPoint( pos_moscow, {size: 2} );
+        globe.addPoint( pos_austin );
+        globe.addPoint( pos_manila );
+        globe.addPoint( pos_hongkong, {size: 4} );
+        globe.addPoint( pos_cebu, {size: 2} );
+        globe.addPoint( pos_singapore, {size: 2} );
+        globe.addPoint( pos_bangkok, {size: 2} );
+        globe.addPoint( pos_phnompenh, {size: 2} );
+        globe.addPoint( pos_saigon, {size: 4} );
+        globe.addPoint( pos_jakarta, {size: 2} );
+        globe.addPoint( pos_tonga, {size: 2} );
+        globe.addPoint( pos_portmoresby, {size: 3} );
+        globe.addPoint( pos_napydaw, {size: 3} );
+        globe.addPoint( pos_portblair, {size: 2} );
+        globe.addPoint( pos_chennai, {size: 2} );
+        globe.addPoint( pos_vizag, {size: 3} );
+        globe.addPoint( pos_darwin, {size: 4} );
 
 
-        // globe.addLineString([pos_mumbai, pos_moscow], {color: 0x0000ff});
-        // globe.addLineString([pos_mumbai, pos_vizag], {color: 0x0000ff});
-        // globe.addLineString([pos_mumbai, pos_delhi], {color: 0xff0000});
-        // globe.addLineString([pos_mumbai, pos_chennai], {color: 0xfff000});
-        // globe.addLineString([pos_darwin, pos_cebu], {color: 0xff0000});
-        // globe.addLineString([pos_napydaw, pos_vizag], {color: 0xff0000});
-        // globe.addLineString([pos_chennai, pos_portblair], {color: 0xff0000});
-        // globe.addLineString([pos_singapore, pos_bangkok], {color: 0xff0000});
-        // globe.addLineString([pos_bangkok, pos_napydaw], {color: 0xff0000});
-        // globe.addLineString([pos_tonga, pos_portmoresby], {color: 0xff0000});
-        // globe.addLineString([pos_hongkong, pos_saigon], {color: 0xff0000});
-        // globe.addLineString([pos_manila, pos_portmoresby], {color: 0xff0000});
-        // globe.addLineString([pos_darwin, pos_jakarta], {color: 0xff0000});
-        // globe.addLineString([pos_phnompenh, pos_bangkok], {color: 0xff0000});
-        // globe.addLineString([pos_cebu, pos_jakarta], {color: 0xff0000});
-        // globe.addLineString([pos_darwin, pos_saigon], {color: 0xff0000});
-        // globe.addLineString([pos_cebu, pos_manila], {color: 0xff0000});
+        globe.addLineString([pos_mumbai, pos_moscow], {color: 0x0000ff});
+        globe.addLineString([pos_mumbai, pos_vizag], {color: 0x0000ff});
+        globe.addLineString([pos_mumbai, pos_delhi], {color: 0xff0000});
+        globe.addLineString([pos_mumbai, pos_chennai], {color: 0xfff000});
+        globe.addLineString([pos_darwin, pos_cebu], {color: 0xff0000});
+        globe.addLineString([pos_napydaw, pos_vizag], {color: 0xff0000});
+        globe.addLineString([pos_chennai, pos_portblair], {color: 0xff0000});
+        globe.addLineString([pos_singapore, pos_bangkok], {color: 0xff0000});
+        globe.addLineString([pos_bangkok, pos_napydaw], {color: 0xff0000});
+        globe.addLineString([pos_tonga, pos_portmoresby], {color: 0xff0000});
+        globe.addLineString([pos_hongkong, pos_saigon], {color: 0xff0000});
+        globe.addLineString([pos_manila, pos_portmoresby], {color: 0xff0000});
+        globe.addLineString([pos_darwin, pos_jakarta], {color: 0xff0000});
+        globe.addLineString([pos_phnompenh, pos_bangkok], {color: 0xff0000});
+        globe.addLineString([pos_cebu, pos_jakarta], {color: 0xff0000});
+        globe.addLineString([pos_darwin, pos_saigon], {color: 0xff0000});
+        globe.addLineString([pos_cebu, pos_manila], {color: 0xff0000});
+
+        
+        
+        
+        
+        // var json;
+
+        // json = await fetch('/data/dinagat.geojson');
+        // globe.addGeoJson(json.json());
+
+
+        // json = await fetch('/data/magellan-line.geojson');
+        // globe.addGeoJson(json.json());
+
+
+        // json = await fetch('/data/dinagats.geojson');
+        // globe.addGeoJson(json.json());
+        
+        
+        
 
 
         // let json = await fetch('/data/dinagat.geojson');
@@ -132,9 +153,9 @@
         // globe.addGeoJson(gj);
 
 
-        // let json = await fetch('/data/sample.geojson');
-        // let gj = await json.json();
-        // globe.addGeoJson(gj);
+        let json = await fetch('/data/sample.geojson');
+        let gj = await json.json();
+        globe.addGeoJson(gj);
 
 
         // document.addEventListener("keyup", function (event) {

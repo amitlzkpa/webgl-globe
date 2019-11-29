@@ -485,8 +485,8 @@ function lngToSphericalCoords(lng) {
       coords = input.geometry.coordinates;
     }
 
-    var lat = coords[0];
-    var lng = coords[1];
+    var lng = coords[0];
+    var lat = coords[1];
 
     var phi = latToSphericalCoords(lat);
     var theta = lngToSphericalCoords(lng);
@@ -548,15 +548,14 @@ function lngToSphericalCoords(lng) {
     if (input.constructor === Array) {
       coords = input;
     } else {
-      // coordinate format is flipped in geojsons
-      coords = input.geometry.coordinates.map(c => [c[0], c[1]]);
+      coords = input.geometry.coordinates;
     }
 
     var points = new THREE.Object3D();
 
     for(var ptIdx = 0; ptIdx < coords.length; ptIdx++) {
-      var lat = coords[ptIdx][0];
-      var lng = coords[ptIdx][1];
+      var lng = coords[ptIdx][0];
+      var lat = coords[ptIdx][1];
 
       var phi = latToSphericalCoords(lat);
       var theta = lngToSphericalCoords(lng);
@@ -624,8 +623,7 @@ function lngToSphericalCoords(lng) {
     if (input.constructor === Array) {
       inPts = input;
     } else {
-      // coordinate format is flipped in geojsons
-      inPts = input.geometry.coordinates.map(c => { return [c[1], c[0]]; });
+      inPts = input.geometry.coordinates;
     }
 
     if (inPts.length < 2) throw ('Need at least 2 points for a line');
@@ -655,8 +653,8 @@ function lngToSphericalCoords(lng) {
     var c=0;
     var geometry = new THREE.Geometry();
     do {
-      var lat = pts[c][0];
-      var lng = pts[c][1];
+      var lng = pts[c][0];
+      var lat = pts[c][1];
       var phi = latToSphericalCoords(lat);
       var theta = lngToSphericalCoords(lng);
       var vt = new THREE.Vector3();
@@ -735,8 +733,7 @@ function lngToSphericalCoords(lng) {
     if (input.constructor === Array) {
       inLns = input;
     } else {
-      // coordinate format is flipped in geojsons
-      inLns = input.geometry.coordinates.map(l => { return l.map(c => { return [c[1], c[0]]; }); });
+      inLns = input.geometry.coordinates;
     }
 
     var lines = new THREE.Object3D();
@@ -771,8 +768,8 @@ function lngToSphericalCoords(lng) {
       var c=0;
       var geometry = new THREE.Geometry();
       do {
-        var lat = pts[c][0];
-        var lng = pts[c][1];
+        var lng = pts[c][0];
+        var lat = pts[c][1];
         var phi = latToSphericalCoords(lat);
         var theta = lngToSphericalCoords(lng);
         var vt = new THREE.Vector3();
@@ -814,10 +811,10 @@ function lngToSphericalCoords(lng) {
    *
    */
   function addGeoJson(geoJson) {
-    var feat = parseFeature(geoJson);
-    scene.add(feat);
-    // var feat = parseFeatureCollection(geoJson);
+    // var feat = parseFeature(geoJson);
     // scene.add(feat);
+    var feat = parseFeatureCollection(geoJson);
+    scene.add(feat);
   }
 
   /**
