@@ -814,12 +814,12 @@ function lngToSphericalCoords(lng) {
 
     switch(geoJson.type) {
       case "Feature": {
-        var feat = parseFeature(geoJson);
+        var feat = addFeature(geoJson);
         scene.add(feat);
         break;
       }
       case "FeatureCollection": {
-        var feat = parseFeatureCollection(geoJson);
+        var feat = addFeatureCollection(geoJson);
         scene.add(feat);
         break;
       }
@@ -831,7 +831,7 @@ function lngToSphericalCoords(lng) {
   }
 
   /**
-   * Parses a given node in a geojson object and returns corresponding threejs object.
+   * Adds a given node in a geojson object and returns corresponding threejs object.
    * Currently supports only a single feature json containing Point, MultiPoint, Line or MultiLine.
    *
    * @param {Geojson} geoJsonNode - Geojson node to be parsed.
@@ -848,10 +848,10 @@ function lngToSphericalCoords(lng) {
    *                     "name": "Dinagat Islands"
    *                   }
    *                 };
-   *    var threeJsObj = globe.parseFeature(node);
+   *    var threeJsObj = globe.addFeature(node);
    *
    */
-  function parseFeature(node) {
+  function addFeature(node) {
     var ftType = node.geometry.type;
     var ret = null;
     switch (ftType) {
@@ -880,10 +880,9 @@ function lngToSphericalCoords(lng) {
   }
 
   /**
-   * Parses a given node in a geojson object and returns corresponding threejs object.
-   * Currently supports FeatureCollections.
+   * Adds a given node in a geojson object and returns corresponding threejs object.
    *
-   * @param {Geojson} geoJsonNode - Geojson node to be parsed.
+   * @param {Geojson} geoJsonNode - Geojson node to be added.
    *
    * @example
    *
@@ -922,10 +921,10 @@ function lngToSphericalCoords(lng) {
    *                         }
    *                      ]
    *                    };
-   *    var threeJsObj = globe.parseFeatureCollection(node);
+   *    var threeJsObj = globe.addFeatureCollection(node);
    *
    */
-  function parseFeatureCollection(node) {
+  function addFeatureCollection(node) {
     var ftType = node.type;
     if (ftType !== "FeatureCollection") {
       throw (`Unexpected typ: '${ftType}'. Expected FeatureCollection`)
@@ -933,7 +932,7 @@ function lngToSphericalCoords(lng) {
     var ret = new THREE.Object3D();
     var feats = node.features;
     for(var i=0; i<feats.length; i++) {
-      var f = parseFeature(feats[i]);
+      var f = addFeature(feats[i]);
       if (f) ret.add(f);
     }
     return ret;
@@ -978,6 +977,8 @@ function lngToSphericalCoords(lng) {
   this.addMultiPoint = addMultiPoint;
   this.addLineString = addLineString;
   this.addMultiLineString = addMultiLineString;
+  this.addFeature = addFeature;
+  this.addFeatureCollection = addFeatureCollection;
   this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
   this.renderer = renderer;

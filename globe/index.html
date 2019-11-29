@@ -128,6 +128,18 @@
 
         json = await fetch('/data/dinagats.geojson');
         globe.addGeoJson(await json.json());
+
+
+        json = await fetch('/data/magellan-line.geojson');
+        globe.addGeoJson(await json.json());
+
+
+        json = await fetch('/data/sample.geojson');
+        globe.addGeoJson(await json.json());
+
+
+        json = await fetch('/data/world.geojson');
+        globe.addGeoJson(await json.json());
         
         
         
