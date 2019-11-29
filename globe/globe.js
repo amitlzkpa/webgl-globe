@@ -365,6 +365,57 @@ DAT.Globe = function(container, opts) {
   
   // ----------------------------------------------------------------------------
   /*
+
+        _   _ _ _ _         
+  _   _| |_(_) (_) |_ _   _ 
+ | | | | __| | | | __| | | |
+ | |_| | |_| | | | |_| |_| |
+  \__,_|\__|_|_|_|\__|\__, |
+                      |___/ 
+                      
+  */
+
+
+
+ function foo() {
+
+}
+
+
+/**
+ * Method to convert latitude to X coordinate on the globe's surface.
+ *
+ * @param {float} lat - Latitude in decimal coordinates.
+ * @return {float} X coordinate on the globe's surface.
+ *
+ * @example
+ *
+ *     latToSphericalCoords(19.076090);
+ *
+ */
+function latToSphericalCoords(lat) {
+  return (90 - lat) * Math.PI / 180;
+}
+
+/**
+ * Method to convert longitude to Y coordinate on the globe's surface.
+ *
+ * @param {float} lng - Longitude in decimal coordinates.
+ * @return {float} Y coordinate on the globe's surface.
+ *
+ * @example
+ *
+ *     lngToSphericalCoords(72.877426);
+ *
+ */
+function lngToSphericalCoords(lng) {
+  return (180 - lng) * Math.PI / 180;
+}
+
+
+  
+  // ----------------------------------------------------------------------------
+  /*
                    _                 
    __ _  ___  ___ (_)___  ___  _ __  
   / _` |/ _ \/ _ \| / __|/ _ \| '_ \ 
@@ -374,36 +425,6 @@ DAT.Globe = function(container, opts) {
 
   */
 
-
-  /**
-   * Method to convert latitude to X coordinate on the globe's surface.
-   *
-   * @param {float} lat - Latitude in decimal coordinates.
-   * @return {float} X coordinate on the globe's surface.
-   *
-   * @example
-   *
-   *     latToSphericalCoords(19.076090);
-   *
-   */
-  function latToSphericalCoords(lat) {
-    return (90 - lat) * Math.PI / 180;
-  }
-
-  /**
-   * Method to convert longitude to Y coordinate on the globe's surface.
-   *
-   * @param {float} lng - Longitude in decimal coordinates.
-   * @return {float} Y coordinate on the globe's surface.
-   *
-   * @example
-   *
-   *     lngToSphericalCoords(72.877426);
-   *
-   */
-  function lngToSphericalCoords(lng) {
-    return (180 - lng) * Math.PI / 180;
-  }
 
   /**
    * Parses an array or geojson object representing a single point to a threejs 3D object.
@@ -590,8 +611,6 @@ DAT.Globe = function(container, opts) {
     var divs = 100;
     // var d = Math.sqrt(Math.pow(inPts[1][0] - inPts[0][0], 2) + Math.pow(inPts[1][0] - inPts[0][0], 2));
     // console.log(d);
-    // var secondPt = inPts[1];
-    // var firstPt = inPts[0];
 
     var pts = [];
 
