@@ -8,10 +8,11 @@ var DAT = DAT || {};
  *
  * @param {DOMObject} container - The container to hold the scene.
  * @param {Object} opts - An object containing configuration parameters for the globe.
- *                        'earthRadius': Radius of the earth's surface in threejs units. (default = 200)
+ *                        'earthRadius': Radius of the earth's surface in threejs units (default: 200).
  *                        'colorFn': A function for mapping the globe's colors based on HSL values.
  *                        'textureImage': Path to image to be used as texture.
- *                        'autoStart': If the globe object should auto-start (default true).
+ *                        'disableAtmosphere': Disable atmosphere (default: false).
+ *                        'autoStart': If the globe object should auto-start (default: true).
  * @return {DAT.Globe} An instance of the globe.
  *
  * @example
@@ -24,6 +25,7 @@ DAT.Globe = function(container, opts) {
   opts = opts || {};
   var autoStart = typeof opts.autoStart === "undefined" || opts.autoStart === true;
   var earthRadius = opts.earthRadius || 200;
+  var disableAtmosphere = opts.disableAtmosphere || false;
   
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
@@ -142,9 +144,11 @@ DAT.Globe = function(container, opts) {
 
         });
 
-    atmosphereMesh = new THREE.Mesh(geometry, material);
-    atmosphereMesh.scale.set( 1.1, 1.1, 1.1 );
-    scene.add(atmosphereMesh);
+    if (!disableAtmosphere) {
+      atmosphereMesh = new THREE.Mesh(geometry, material);
+      atmosphereMesh.scale.set( 1.1, 1.1, 1.1 );
+      scene.add(atmosphereMesh);
+    }
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(w, h);
