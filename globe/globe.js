@@ -372,7 +372,7 @@ DAT.Globe = function(container, opts) {
  | |_| | |_| | | | |_| |_| |
   \__,_|\__|_|_|_|\__|\__, |
                       |___/ 
-                      
+
   */
 
 
@@ -426,8 +426,23 @@ function lngToSphericalCoords(lng) {
   */
 
 
+  var activeGeoJsons = {};
+
+
+  function addToActiveGeoJsons(threejsObj) {
+    
+    var id = (threejsObj && threejsObj.uuid) ? threejsObj.uuid : null;
+    if (!id) return null;
+
+    activeGeoJsons[id] = threejsObj;
+    scene.add(threejsObj);
+    return threejsObj;
+    
+  }
+
+
   /**
-   * Parses an array or geojson object representing a single point to a threejs 3D object.
+   * Adds an array or geojson object representing a single point to a threejs 3D object.
    *
    * @param {geojson} input - An array or geojson object representing a point on the map.
    * @param {Object} opts - An object containing configuration parameters.
@@ -439,7 +454,7 @@ function lngToSphericalCoords(lng) {
    *      
    *     // As array
    *     var posA = [28.644800, 77.216721];
-   *     var meshA = globe.parsePoint(posA);
+   *     var meshA = globe.addPoint(posA);
    *
    *    // As geojson
    *    var posB =  {
@@ -452,12 +467,13 @@ function lngToSphericalCoords(lng) {
    *                    "name": "Dinagat Islands"
    *                  }
    *                };
-   *     var meshB = globe.parsePoint(posB);
+   *     var meshB = globe.addPoint(posB);
    *
    */
-  function parsePoint(input, opts) {
+  function addPoint(input, opts) {
 
     var coords = null;
+    opts = opts || {};
 
     if (input.constructor === Array) {
       coords = input;
@@ -474,8 +490,8 @@ function lngToSphericalCoords(lng) {
     var phi = latToSphericalCoords(lat);
     var theta = lngToSphericalCoords(lng);
 
-    var sz = (opts !== undefined && opts.size) ? opts.size : 2;
-    var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
+    var sz = opts.size || 2;
+    var color = opts.color || 0xffff00;
     var geometry = new THREE.SphereGeometry( sz, 8, 8 );
     var material = new THREE.MeshBasicMaterial( {color: color} );
     var point = new THREE.Mesh( geometry, material );
@@ -484,7 +500,9 @@ function lngToSphericalCoords(lng) {
     point.position.y = 203 * Math.cos(phi);
     point.position.z = 203 * Math.sin(phi) * Math.sin(theta);
 
-    return point;
+    var mesh = addToActiveGeoJsons(point);
+    
+    return mesh;
   }
 
   /**
@@ -807,7 +825,7 @@ function lngToSphericalCoords(lng) {
     var ret = null;
     switch (ftType) {
       case 'Point': {
-        ret = parsePoint(node, { color: 0xff0000 });
+        ret = addPoint(node, { color: 0xff0000 });
         break;
       }
       case 'MultiPoint': {
@@ -925,7 +943,7 @@ function lngToSphericalCoords(lng) {
   this.reset = init;
   this.animate = animate;
   this.addData = addData;
-  this.parsePoint = parsePoint;
+  this.addPoint = addPoint;
   this.parseMultiPoint = parseMultiPoint;
   this.parseLineString = parseLineString;
   this.parseMultiLineString = parseMultiLineString;
