@@ -579,8 +579,7 @@ function lngToSphericalCoords(lng) {
   }
 
   /**
-   * Parses an array or geojson object representing a single line to a threejs 3D line.
-   * Currently only supports lines with a start and end point.
+   * Adds an array or geojson object representing a single line to a threejs 3D line.
    *
    * @param {geojson} input - An array or geojson object representing a line on the map.
    * @param {Object} opts - An object containing configuration parameters.
@@ -591,7 +590,7 @@ function lngToSphericalCoords(lng) {
    *      
    *     // As array
    *     var lnA = [ [14.6042004, 120.9822006], [22.3964272, 114.1094971] ];
-   *     var lineA = globe.parseLineString(lnA);
+   *     var lineA = globe.addLineString(lnA);
    *
    *    // As geojson
    *    var lnB = {
@@ -613,12 +612,13 @@ function lngToSphericalCoords(lng) {
    *                  "name": "Magellan Line"
    *                }
    *              }
-   *     var lineB = globe.parseLineString(lnB);
+   *     var lineB = globe.addLineString(lnB);
    *
    */
-  function parseLineString(input, opts) {
+  function addLineString(input, opts) {
 
     var inPts = null;
+    opts = opts || {};
 
     if (input.constructor === Array) {
       inPts = input;
@@ -649,7 +649,7 @@ function lngToSphericalCoords(lng) {
       idx++;
     }
 
-    var col = (opts && opts.color) ? opts.color : 0xffffff
+    var col = opts.color || 0xffffff
     var material = new THREE.LineBasicMaterial({ color: col });
     var c=0;
     var geometry = new THREE.Geometry();
@@ -667,7 +667,10 @@ function lngToSphericalCoords(lng) {
     } while(c < pts.length)
 
     var line = new THREE.Line( geometry, material );
-    return line;
+
+    var addedObj = addToActiveGeoJsons(line);
+    
+    return addedObj;
   }
 
   /**
@@ -836,7 +839,7 @@ function lngToSphericalCoords(lng) {
         break;
       }
       case 'LineString': {
-        ret = parseLineString(node, { color: 0xff00f0 });
+        ret = addLineString(node, { color: 0xff00f0 });
         break;
       }
       case 'MultiLineString': {
@@ -948,7 +951,7 @@ function lngToSphericalCoords(lng) {
   this.addData = addData;
   this.addPoint = addPoint;
   this.addMultiPoint = addMultiPoint;
-  this.parseLineString = parseLineString;
+  this.addLineString = addLineString;
   this.parseMultiLineString = parseMultiLineString;
   this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
