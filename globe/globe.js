@@ -506,7 +506,7 @@ function lngToSphericalCoords(lng) {
   }
 
   /**
-   * Parses an array or geojson object representing a multiple points to a threejs 3D object.
+   * Adds an array or geojson object representing a multiple points to a threejs 3D object.
    *
    * @param {geojson} input - An array or geojson object representing multiple points on the map.
    * @param {Object} opts - An object containing configuration parameters.
@@ -518,7 +518,7 @@ function lngToSphericalCoords(lng) {
    *      
    *     // As array
    *     var posA = [ [55.751244, 37.618423], [30.266666, -97.733330] ];
-   *     var objA = globe.parseMultiPoint(posA);
+   *     var objA = globe.addMultiPoint(posA);
    *
    *    // As geojson
    *    var posB =  {
@@ -536,12 +536,13 @@ function lngToSphericalCoords(lng) {
    *                    "name": "Fallen Cities"
    *                  }
    *                }
-   *     var objB = globe.parseMultiPoint(posB);
+   *     var objB = globe.addMultiPoint(posB);
    *
    */
-  function parseMultiPoint(input, opts) {
+  function addMultiPoint(input, opts) {
 
     var coords = null;
+    opts = opts || {};
 
     if (input.constructor === Array) {
       coords = input;
@@ -559,8 +560,8 @@ function lngToSphericalCoords(lng) {
       var phi = latToSphericalCoords(lat);
       var theta = lngToSphericalCoords(lng);
 
-      var sz = (opts !== undefined && opts.size) ? opts.size : 2;
-      var color = (opts !== undefined && opts.color) ? opts.color : 0xffff00;
+      var sz = opts.size || 2;
+      var color = opts.color || 0xffff00;
       var geometry = new THREE.SphereGeometry( sz, 8, 8 );
       var material = new THREE.MeshBasicMaterial( {color: color} );
       var point = new THREE.Mesh( geometry, material );
@@ -572,7 +573,9 @@ function lngToSphericalCoords(lng) {
       points.add(point);
     }
 
-    return points;
+    var mesh = addToActiveGeoJsons(points);
+    
+    return mesh;
   }
 
   /**
@@ -793,10 +796,10 @@ function lngToSphericalCoords(lng) {
    *
    */
   function addGeoJson(geoJson) {
-    // var feat = parseFeature(geoJson);
-    // scene.add(feat);
-    var feat = parseFeatureCollection(geoJson);
+    var feat = parseFeature(geoJson);
     scene.add(feat);
+    // var feat = parseFeatureCollection(geoJson);
+    // scene.add(feat);
   }
 
   /**
@@ -829,7 +832,7 @@ function lngToSphericalCoords(lng) {
         break;
       }
       case 'MultiPoint': {
-        ret = parseMultiPoint(node, { color: 0xababab });
+        ret = addMultiPoint(node, { color: 0xababab });
         break;
       }
       case 'LineString': {
@@ -944,7 +947,7 @@ function lngToSphericalCoords(lng) {
   this.animate = animate;
   this.addData = addData;
   this.addPoint = addPoint;
-  this.parseMultiPoint = parseMultiPoint;
+  this.addMultiPoint = addMultiPoint;
   this.parseLineString = parseLineString;
   this.parseMultiLineString = parseMultiLineString;
   this.addGeoJson = addGeoJson;
