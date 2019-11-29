@@ -116,46 +116,23 @@
         
         
         
-        // var json;
+        var json;
 
-        // json = await fetch('/data/dinagat.geojson');
-        // globe.addGeoJson(json.json());
-
-
-        // json = await fetch('/data/magellan-line.geojson');
-        // globe.addGeoJson(json.json());
+        json = await fetch('/data/dinagat.geojson');
+        globe.addGeoJson(await json.json());
 
 
-        // json = await fetch('/data/dinagats.geojson');
-        // globe.addGeoJson(json.json());
+        json = await fetch('/data/magellan-line.geojson');
+        globe.addGeoJson(await json.json());
+
+
+        json = await fetch('/data/dinagats.geojson');
+        globe.addGeoJson(await json.json());
         
         
         
 
 
-        let json = await fetch('/data/dinagat.geojson');
-        let gj = await json.json();
-        globe.addGeoJson(gj);
-
-
-        // let json = await fetch('/data/magellan-line.geojson');
-        // let gj = await json.json();
-        // globe.addGeoJson(gj);
-
-
-        // let json = await fetch('/data/dinagats.geojson');
-        // let gj = await json.json();
-        // globe.addGeoJson(gj);
-
-
-        // let json = await fetch('/data/magellan-lines.geojson');
-        // let gj = await json.json();
-        // globe.addGeoJson(gj);
-
-
-        let mason = await fetch('/data/sample.geojson');
-        let mj = await mason.json();
-        globe.addGeoJson(mj);
 
 
         // document.addEventListener("keyup", function (event) {
