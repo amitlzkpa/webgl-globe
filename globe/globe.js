@@ -1,15 +1,3 @@
-/**
- * dat.globe Javascript WebGL Globe Toolkit
- * https://github.com/dataarts/webgl-globe
- *
- * Copyright 2011 Data Arts Team, Google Creative Lab
- *
- * Licensed under the Apache License, Version 2.0 (the 'License');
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 
 var DAT = DAT || {};
 
@@ -90,8 +78,8 @@ DAT.Globe = function(container, opts) {
   };
 
   var camera, scene, renderer, w, h;
-  var mesh, atmosphere, point;
-  var groundMesh;
+  var earthMesh;
+  var atmosphereMesh;
 
   var overRenderer;
 
@@ -136,10 +124,9 @@ DAT.Globe = function(container, opts) {
 
         });
 
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.rotation.y = Math.PI;
-    scene.add(mesh);
-    groundMesh = mesh;
+    earthMesh = new THREE.Mesh(geometry, material);
+    earthMesh.rotation.y = Math.PI;
+    scene.add(earthMesh);
 
     shader = Shaders['atmosphere'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -155,19 +142,14 @@ DAT.Globe = function(container, opts) {
 
         });
 
-    mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.set( 1.1, 1.1, 1.1 );
-    scene.add(mesh);
-
-    geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
-    geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-0.5));
-
-    point = new THREE.Mesh(geometry);
+    atmosphereMesh = new THREE.Mesh(geometry, material);
+    atmosphereMesh.scale.set( 1.1, 1.1, 1.1 );
+    scene.add(atmosphereMesh);
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(w, h);
 
-    renderer.domElement.style.position = 'absolute';
+    // renderer.domElement.style.position = 'absolute';
 
     container.appendChild(renderer.domElement);
 
@@ -186,84 +168,6 @@ DAT.Globe = function(container, opts) {
     container.addEventListener('mouseout', function() {
       overRenderer = false;
     }, false);
-  }
-
-  function addData(data, opts) {
-    var lat, lng, size, color, i, step, colorFnWrapper;
-
-    opts.animated = opts.animated || false;
-    this.is_animated = opts.animated;
-    opts.format = opts.format || 'magnitude'; // other option is 'legend'
-    if (opts.format === 'magnitude') {
-      step = 3;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+2]); }
-    } else if (opts.format === 'legend') {
-      step = 4;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+3]); }
-    } else {
-      throw('error: format not supported: '+opts.format);
-    }
-
-    if (opts.animated) {
-      if (this._baseGeometry === undefined) {
-        this._baseGeometry = new THREE.Geometry();
-        for (i = 0; i < data.length; i += step) {
-          lat = data[i];
-          lng = data[i + 1];
-          color = colorFnWrapper(data,i);
-          size = 0;
-          addPoint(lat, lng, size, color, this._baseGeometry);
-        }
-      }
-      if(this._morphTargetId === undefined) {
-        this._morphTargetId = 0;
-      } else {
-        this._morphTargetId += 1;
-      }
-      opts.name = opts.name || 'morphTarget'+this._morphTargetId;
-    }
-    var subgeo = new THREE.Geometry();
-    for (i = 0; i < data.length; i += step) {
-      lat = data[i];
-      lng = data[i + 1];
-      color = colorFnWrapper(data,i);
-      size = data[i + 2];
-      size = size*200;
-      addPoint(lat, lng, size, color, subgeo);
-    }
-    if (opts.animated) {
-      this._baseGeometry.morphTargets.push({'name': opts.name, vertices: subgeo.vertices});
-    } else {
-      this._baseGeometry = subgeo;
-    }
-  };
-
-  function createPoints() {
-    if (this._baseGeometry !== undefined) {
-      if (this.is_animated === false) {
-        this.points = new THREE.Mesh(this._baseGeometry, new THREE.MeshBasicMaterial({
-              color: 0xffffff,
-              vertexColors: THREE.FaceColors,
-              morphTargets: false
-            }));
-      } else {
-        if (this._baseGeometry.morphTargets.length < 8) {
-          console.log('t l',this._baseGeometry.morphTargets.length);
-          var padding = 8-this._baseGeometry.morphTargets.length;
-          console.log('padding', padding);
-          for(var i=0; i<=padding; i++) {
-            console.log('padding',i);
-            this._baseGeometry.morphTargets.push({'name': 'morphPadding'+i, vertices: this._baseGeometry.vertices});
-          }
-        }
-        this.points = new THREE.Mesh(this._baseGeometry, new THREE.MeshBasicMaterial({
-              color: 0xffffff,
-              vertexColors: THREE.FaceColors,
-              morphTargets: true
-            }));
-      }
-      scene.add(this.points);
-    }
   }
 
   function onMouseDown(event) {
@@ -357,7 +261,7 @@ DAT.Globe = function(container, opts) {
     camera.position.y = distance * Math.sin(rotation.y);
     camera.position.z = distance * Math.cos(rotation.x) * Math.cos(rotation.y);
 
-    camera.lookAt(mesh.position);
+    camera.lookAt(earthMesh.position);
 
     renderer.render(scene, camera);
   }
@@ -978,7 +882,6 @@ function lngToSphericalCoords(lng) {
   this.init = init;
   this.reset = init;
   this.animate = animate;
-  this.addData = addData;
   this.addPoint = addPoint;
   this.addMultiPoint = addMultiPoint;
   this.addLineString = addLineString;
@@ -986,10 +889,10 @@ function lngToSphericalCoords(lng) {
   this.addFeature = addFeature;
   this.addFeatureCollection = addFeatureCollection;
   this.addGeoJson = addGeoJson;
-  this.createPoints = createPoints;
   this.renderer = renderer;
   this.scene = scene;
-  this.mesh = groundMesh;
+  this.earthMesh = earthMesh;
+  this.atmosphereMesh = atmosphereMesh;
   
 
   
