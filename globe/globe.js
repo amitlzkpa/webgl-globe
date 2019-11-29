@@ -585,20 +585,29 @@ DAT.Globe = function(container, opts) {
       inPts = input.geometry.coordinates.map(c => { return [c[1], c[0]]; });
     }
 
-    if (inPts.length != 2) throw ('Need 2 points for a line');
+    if (inPts.length < 2) throw ('Need at least 2 points for a line');
 
     var divs = 100;
     // var d = Math.sqrt(Math.pow(inPts[1][0] - inPts[0][0], 2) + Math.pow(inPts[1][0] - inPts[0][0], 2));
     // console.log(d);
-    var deltaLat = (inPts[1][0] - inPts[0][0]) / divs;
-    var deltaLng = (inPts[1][1] - inPts[0][1]) / divs;
+    // var secondPt = inPts[1];
+    // var firstPt = inPts[0];
 
     var pts = [];
 
-    for(var j = 0; j<divs; j++) {
-      pts.push([inPts[0][0] + (j * deltaLat), inPts[0][1] + (j * deltaLng)]);
+    var idx = 1;
+    while(idx < inPts.length) {
+      var secondPt = inPts[idx];
+      var firstPt = inPts[idx-1];
+    
+      var deltaLat = (secondPt[0] - firstPt[0]) / divs;
+      var deltaLng = (secondPt[1] - firstPt[1]) / divs;
+
+      for(var j = 0; j<divs; j++) {
+        pts.push([firstPt[0] + (j * deltaLat), firstPt[1] + (j * deltaLng)]);
+      }
+      idx++;
     }
-    pts.push(inPts[inPts.length-1])
 
     var col = (opts && opts.color) ? opts.color : 0xffffff
     var material = new THREE.LineBasicMaterial({ color: col });
@@ -747,7 +756,9 @@ DAT.Globe = function(container, opts) {
    *
    */
   function addGeoJson(geoJson) {
-    var feat = parseFeature(geoJson);
+    // var feat = parseFeature(geoJson);
+    // scene.add(feat);
+    var feat = parseFeatureCollection(geoJson);
     scene.add(feat);
   }
 
@@ -796,6 +807,66 @@ DAT.Globe = function(container, opts) {
         ret = null;
         break;
       }
+    }
+    return ret;
+  }
+
+  /**
+   * Parses a given node in a geojson object and returns corresponding threejs object.
+   * Currently supports FeatureCollections.
+   *
+   * @param {Geojson} geoJsonNode - Geojson node to be parsed.
+   *
+   * @example
+   *
+   *    var node =    {
+   *                    "type": "FeatureCollection",
+   *                    "features": [
+   *                      { "type": "Feature",
+   *                        "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+   *                        "properties": {"prop0": "value0"}
+   *                        },
+   *                      { "type": "Feature",
+   *                        "geometry": {
+   *                          "type": "LineString",
+   *                          "coordinates": [
+   *                            [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+   *                            ]
+   *                          },
+   *                        "properties": {
+   *                          "prop0": "value0",
+   *                          "prop1": 0.0
+   *                          }
+   *                        },
+   *                      { "type": "Feature",
+   *                         "geometry": {
+   *                           "type": "Polygon",
+   *                           "coordinates": [
+   *                             [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+   *                               [100.0, 1.0], [100.0, 0.0] ]
+   *                             ]
+   *                  
+   *                         },
+   *                         "properties": {
+   *                           "prop0": "value0",
+   *                           "prop1": {"this": "that"}
+   *                           }
+   *                         }
+   *                      ]
+   *                    };
+   *    var threeJsObj = globe.parseFeatureCollection(node);
+   *
+   */
+  function parseFeatureCollection(node) {
+    var ftType = node.type;
+    if (ftType !== "FeatureCollection") {
+      throw (`Unexpected typ: '${ftType}'. Expected FeatureCollection`)
+    }
+    var ret = new THREE.Object3D();
+    var feats = node.features;
+    for(var i=0; i<feats.length; i++) {
+      var f = parseFeature(feats[i]);
+      if (f) ret.add(f);
     }
     return ret;
   }
