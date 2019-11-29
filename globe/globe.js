@@ -674,8 +674,7 @@ function lngToSphericalCoords(lng) {
   }
 
   /**
-   * Parses an array or geojson object representing multiple lines to threejs 3D lines.
-   * Currently only supports lines with a start and end point.
+   * Adds an array or geojson object representing multiple lines to threejs 3D lines.
    *
    * @param {geojson} input - An array or geojson object representing multiple lines on the map.
    * @param {Object} opts - An object containing configuration parameters.
@@ -686,7 +685,7 @@ function lngToSphericalCoords(lng) {
    *      
    *     // As array
    *     var lnA = [ [ [14.6042004, 120.9822006], [22.3964272, 114.1094971] ], [ [11.5624504, 104.916008], [10.82302, 106.6296463] ] ];
-   *     var lineA = globe.parseMultiLineString(lnA);
+   *     var lineA = globe.addMultiLineString(lnA);
    *
    *    // As geojson
    *    var lnB = {
@@ -720,12 +719,13 @@ function lngToSphericalCoords(lng) {
    *                  "name": "Incense License"
    *                }
    *              }
-   *     var lineB = globe.parseMultiLineString(lnB);
+   *     var lineB = globe.addMultiLineString(lnB);
    *
    */
-  function parseMultiLineString(input, opts) {
+  function addMultiLineString(input, opts) {
 
     var inLns = null;
+    opts = opts || {};
 
     if (input.constructor === Array) {
       inLns = input;
@@ -774,7 +774,9 @@ function lngToSphericalCoords(lng) {
       lines.add(line);
     }
 
-    return lines;
+    var addedObj = addToActiveGeoJsons(lines);
+    
+    return addedObj;
   }
 
   /**
@@ -843,7 +845,7 @@ function lngToSphericalCoords(lng) {
         break;
       }
       case 'MultiLineString': {
-        ret = parseMultiLineString(node, { color: 0x0000ff });
+        ret = addMultiLineString(node, { color: 0x0000ff });
         break;
       }
       default: {
@@ -952,7 +954,7 @@ function lngToSphericalCoords(lng) {
   this.addPoint = addPoint;
   this.addMultiPoint = addMultiPoint;
   this.addLineString = addLineString;
-  this.parseMultiLineString = parseMultiLineString;
+  this.addMultiLineString = addMultiLineString;
   this.addGeoJson = addGeoJson;
   this.createPoints = createPoints;
   this.renderer = renderer;
