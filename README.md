@@ -1,69 +1,51 @@
-The **WebGL Globe** is an open platform for geographic data visualization created by the Google Data Arts Team. We encourage you to copy the code, add your own data, and create your own globes.
+# WebGL Globe
 
-Check out the examples at https://experiments.withgoogle.com/chrome/globe, and if you create a globe, please [share it with us](http://www.chromeexperiments.com/submit). We post our favorite globes publicly.
+A library to create interactive 3D globes with support for geojson files.
+![Screenshot](/assets/screenshot_01.png)
 
-![](http://4.bp.blogspot.com/-nB6XnTgb4AA/TcLQ4gRBtfI/AAAAAAAAH-U/vb2GuhPN6aM/globe.png)
+Create an interactive globe in your browser and load data from geojson files.  
 
-----
+Features:
+- Easy to use.
+- Supports threejs integrations.
+- 
 
-**The WebGL Globe** supports data in `JSON` format, a sample of which you can find [here](https://github.com/dataarts/webgl-globe/blob/master/globe/population909500.json). `webgl-globe` makes heavy use of the [Three.js library](https://github.com/mrdoob/three.js/).
+## Getting Started
 
-# Data Format
-
-The following illustrates the `JSON` data format that the globe expects:
-
-```javascript
-var data = [
-    [
-    'seriesA', [ latitude, longitude, magnitude, latitude, longitude, magnitude, ... ]
-    ],
-    [
-    'seriesB', [ latitude, longitude, magnitude, latitude, longitude, magnitude, ... ]
-    ]
-];
+### Include
+```
+<script src="/globe/third-party/Detector.js"></script>
+<script src="/globe/third-party/three.min.js"></script>
+<script src="/globe/third-party/Tween.js"></script>
+<script src="/globe/third-party/MercatorPlane.js"></script>
+<script src="/globe/globe.js"></script>
+<script src="/globe/third-party/mapbox-gl.js"></script>
 ```
 
-# Basic Usage
-
-The following code polls a `JSON` file (formatted like the one above) for geo-data and adds it to an animated, interactive WebGL globe.
-
-```javascript
-// Where to put the globe?
-var container = document.getElementById( 'container' );
-
-// Make the globe
-var globe = new DAT.Globe( container );
-
-// We're going to ask a file for the JSON data.
-var xhr = new XMLHttpRequest();
-
-// Where do we get the data?
-xhr.open( 'GET', 'myjson.json', true );
-
-// What do we do when we have it?
-xhr.onreadystatechange = function() {
-
-    // If we've received the data
-    if ( xhr.readyState === 4 && xhr.status === 200 ) {
-
-        // Parse the JSON
-        var data = JSON.parse( xhr.responseText );
-
-        // Tell the globe about your JSON data
-        for ( var i = 0; i < data.length; i ++ ) {
-            globe.addData( data[i][1], {format: 'magnitude', name: data[i][0]} );
-        }
-
-        // Create the geometry
-        globe.createPoints();
-
-        // Begin animation
-        globe.animate();
-
-    }
-
-};
-
-// Begin request
-xhr.send( null );
+### Initialize
+**Full Screen**:
+Javascript:
 ```
+var globe = new DAT.Globe(null, opts);
+```
+
+**Windowed**:
+HTML:
+```
+...
+<div id="container"></div>
+...
+```
+Javascript:
+```
+var container = document.getElementById("container");
+var globe = new DAT.Globe(container, opts);
+```
+
+### Load Data
+```
+var sampleData = await fetch('/data/sample.geojson');
+var geojson = await sampleData.json();
+globe.addFeatureCollection(geojson);
+```
+
